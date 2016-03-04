@@ -78,15 +78,14 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			
 			CPcImage imgcdt = new CPcImage();
 			imgcdt.setIds(imageids.toArray(new Long[0]));
-//			List<PcImage> images = imageSvc.queryImageList(imgcdt, null);
+			List<PcImage> images = imageSvc.queryImageList(imgcdt, null);
 			
-//			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
+			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
 			
 			for(int i=0; i<settingsList.size(); i++) {
 				AppImageSettings settings = settingsList.get(i);
 				Long imageId = settings.getAppImage().getImageId();
-				PcImage image = new PcImage();
-//				image.
+				PcImage image = imgmap.get(imageId);
 				settings.setImage(image);
 			}
 		}
