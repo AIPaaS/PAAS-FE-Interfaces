@@ -18,8 +18,8 @@ public class PcAppImagePeerTest extends TestTemplate{
 	
 	@Test
 	public void startDeploy(){
-		Long appId  =1l;
-		Long appVnoId = 1l;
+		Long appId  =82l;
+		Long appVnoId = 42l;
 		peer.startDeploy(appId, appVnoId);
 	}
 	

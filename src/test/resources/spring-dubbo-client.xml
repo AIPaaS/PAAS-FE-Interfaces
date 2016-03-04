@@ -41,7 +41,7 @@
 		
 	<!--    be-am -->
 	<dubbo:application name="paas_dubbo_service"/>
-	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.web.rest.IDeployServiceManager" url="${dubbox.rest.root.beam}"/>
+	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.rest.dep.IDeployServiceManager" url="${dubbox.rest.root.beam}"/>
 	
 	
 </beans>

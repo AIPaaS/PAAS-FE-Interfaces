@@ -78,14 +78,15 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			
 			CPcImage imgcdt = new CPcImage();
 			imgcdt.setIds(imageids.toArray(new Long[0]));
-			List<PcImage> images = imageSvc.queryImageList(imgcdt, null);
+//			List<PcImage> images = imageSvc.queryImageList(imgcdt, null);
 			
-			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
+//			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
 			
 			for(int i=0; i<settingsList.size(); i++) {
 				AppImageSettings settings = settingsList.get(i);
 				Long imageId = settings.getAppImage().getImageId();
-				PcImage image = imgmap.get(imageId);
+				PcImage image = new PcImage();
+//				image.
 				settings.setImage(image);
 			}
 		}
@@ -105,8 +106,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		
 		
-		CPcApp cdt = new CPcApp();
-		cdt.setId(appId);
 		PcApp pcApp = appSvc.queryById(appId);
 		
 		
@@ -172,7 +171,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setContainers(containers);
 		
 		System.out.println(JSON.toString(generalReq));
-		String resStr  = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
+		String resStr  = iDeployServiceManager.createLongRun(JSON.toString(generalReq));
 		System.out.println(JSON.toString(resStr));
 		return resStr;
 		
