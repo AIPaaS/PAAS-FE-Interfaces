@@ -170,7 +170,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setContainers(containers);
 		
 		System.out.println(JSON.toString(generalReq));
-		String resStr  = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
+		String resStr  = iDeployServiceManager.createLongRun(JSON.toString(generalReq));
 		System.out.println(JSON.toString(resStr));
 		return resStr;
 		
