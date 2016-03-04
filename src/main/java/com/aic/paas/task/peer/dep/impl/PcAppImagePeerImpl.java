@@ -77,8 +77,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	
 	@Override
 	public void startDeploy(Long appId, Long appVnoId) {
-		// TODO Auto-generated method stub
-		
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 	}
 	
 
