@@ -36,7 +36,7 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 * @param appVnoId
 	 */
-	public void startDeploy(Long appId, Long appVnoId);
+	public String startDeploy(Long appId, Long appVnoId);
 	
 	
 	

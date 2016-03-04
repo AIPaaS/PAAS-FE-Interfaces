@@ -44,7 +44,7 @@
     	<property name="threadPool" ref="MessageTrigger_ThreadPool" />
     </bean>
     
-    
+    <bean class="com.aic.paas.task.peer.dep.impl.PcAppImagePeerImpl"></bean>
         
     
 </beans>
