@@ -45,7 +45,7 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 * @param appVnoId
 	 */
-	public void reDeploy(Long appId, Long appVnoId);
+	public String reDeploy(Long appId, Long appVnoId);
 	
 	
 	
@@ -55,9 +55,21 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 * @param appVnoId
 	 */
-	public void stopDeploy(Long appId, Long appVnoId);
+	public String destroyDeploy(Long appId, Long appVnoId);
 	
+	/**
+	 * 开始运行应用
+	 * @param appId
+	 * @param appVnoId
+	 */
+	public String startApp(Long appId, Long appVnoId);
 	
+	/**
+	 * 暂停运行应用
+	 * @param appId
+	 * @param appVnoId
+	 */
+	public String pauseApp(Long appId, Long appVnoId);
 	
 	
 
