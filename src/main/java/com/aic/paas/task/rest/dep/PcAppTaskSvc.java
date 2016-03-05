@@ -1,4 +1,4 @@
-package com.aic.paas.task.rest.dev;
+package com.aic.paas.task.rest.dep;
 
 import com.aic.paas.task.bean.dep.PcAppTask;
 
