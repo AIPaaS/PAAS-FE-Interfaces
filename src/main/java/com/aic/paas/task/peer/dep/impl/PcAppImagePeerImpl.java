@@ -27,7 +27,7 @@ import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
 import com.aic.paas.task.rest.dep.PcAppImageSvc;
 import com.aic.paas.task.rest.dep.PcAppSvc;
-import com.aic.paas.task.rest.dev.PcAppTaskSvc;
+import com.aic.paas.task.rest.dep.PcAppTaskSvc;
 import com.aic.paas.task.rest.dev.PcImageSvc;
 import com.binary.core.util.BinaryUtils;
 import com.binary.json.JSON;
