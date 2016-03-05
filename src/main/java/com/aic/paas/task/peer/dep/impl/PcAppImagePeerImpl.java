@@ -281,7 +281,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			crontainer.setInstances(0);
 		}
 		generalReq.setContainers(containers);
-		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
+		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
