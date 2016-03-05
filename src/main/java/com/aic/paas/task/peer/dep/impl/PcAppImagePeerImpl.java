@@ -168,6 +168,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
 			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTask.setAppId(appId);
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		System.out.println(JSON.toString(resStr));
@@ -201,6 +202,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
 			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTask.setAppId(appId);
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		return resStr;
@@ -229,6 +231,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
 			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTask.setAppId(appId);
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		return resStr;
@@ -258,6 +261,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
 			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTask.setAppId(appId);
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		return resStr;
@@ -287,6 +291,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
 			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTask.setAppId(appId);
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		return resStr;
