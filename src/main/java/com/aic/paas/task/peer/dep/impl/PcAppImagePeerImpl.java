@@ -167,6 +167,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
 			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTask.setId(resp.getReqId().longValue());
 			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		System.out.println(JSON.toString(resStr));
@@ -195,6 +196,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.upgrade(JSON.toString(generalReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// write task log and so on...
+			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+		}
 		return resStr;
 	}
 
@@ -216,6 +224,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// write task log and so on...
+			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+		}
 		return resStr;
 	}
 
@@ -238,6 +253,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// write task log and so on...
+			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+		}
 		return resStr;
 	}
 
@@ -260,6 +282,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// write task log and so on...
+			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTask.setId(resp.getReqId().longValue());
+			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+		}
 		return resStr;
 	}
 
