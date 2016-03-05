@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.task.bean.dep.AppImageSettings;
 import com.aic.paas.task.bean.dep.AppImageSvcInfo;
+import com.aic.paas.task.bean.dep.GeneralDeployResp;
 import com.aic.paas.task.bean.dep.GeneralReq;
 import com.aic.paas.task.bean.dep.GeneralReq.Container;
 import com.aic.paas.task.bean.dep.GeneralReq.Container.For;
@@ -157,6 +158,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 		System.out.println(JSON.toString(generalReq));
 		String resStr = iDeployServiceManager.createLongRun(JSON.toString(generalReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		if(GeneralDeployResp.SUCCESS.equals(resp.getResultCode())){
+			// write task log and so on...
+			
+		}
 		System.out.println(JSON.toString(resStr));
 		return resStr;
 
