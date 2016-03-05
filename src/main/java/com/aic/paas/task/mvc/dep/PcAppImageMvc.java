@@ -66,7 +66,7 @@ public class PcAppImageMvc {
 	public void stopDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.stopDeploy(appId, appVnoId);
+		appImagePeer.destroyDeploy(appId, appVnoId);
 	}
 	
 	
