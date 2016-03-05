@@ -110,10 +110,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 		List<Container> containers = new ArrayList<Container>();
 		for (AppImageSettings setting : appImageList) {
-			Container crontainer = new Container();
-			crontainer.setContainerId(setting.getAppImage().getId().toString());
-			crontainer.setContainerName(setting.getAppImage().getContainerName());
-			crontainer.setZoneId(setting.getAppImage().getNetZoneId().toString());
+			Container container = new Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			List<Parameter> attrs = new ArrayList<Parameter>();
 			List<PcKvPair> paramList = setting.getParams();
 			for (PcKvPair pair : paramList) {
@@ -121,29 +121,29 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pa.setKey(pair.getKvKey());
 				pa.setValue(pair.getKvVal());
 			}
-			crontainer.setAttrs(attrs);
-			crontainer.setVersion(pcApp.getVersionNo());
+			container.setAttrs(attrs);
+			container.setVersion(pcApp.getVersionNo());
 			List<PcAppImage> dependList = setting.getDependImages();
 
 			List<String> containeIdList = new ArrayList<String>();
 			for (PcAppImage image : dependList) {
 				containeIdList.add(image.getId().toString());
 			}
-			crontainer.setImgFullName("redis");
-			crontainer.setImgVersion("3.0.6");
+			container.setImgFullName("redis");
+			container.setImgVersion("3.0.6");
 			// crontainer.setDepends(containeIdList.toArray().toString());
-			crontainer.setCpu(setting.getAppImage().getCpuCount() / 100.0);
-			crontainer.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
+			container.setCpu(setting.getAppImage().getCpuCount() / 100.0);
+			container.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			crontainer.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
-			crontainer.setInstances(setting.getAppImage().getInstanceCount());
+			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setInstances(setting.getAppImage().getInstanceCount());
 			// containe.set
 			if (setting.getAppImage().getIsSupportFlex().equals(1)) {
 
-				crontainer.setMaxInst(setting.getAppImage().getMaxInstanceCount());
-				crontainer.setMinInst(setting.getAppImage().getMinInstanceCount());
-				crontainer.setScaleInCpu(setting.getAppImage().getCpuFlexLowerLimit());
-				crontainer.setScaleOutCpu(setting.getAppImage().getCpuFlexUpperLimit());
+				container.setMaxInst(setting.getAppImage().getMaxInstanceCount());
+				container.setMinInst(setting.getAppImage().getMinInstanceCount());
+				container.setScaleInCpu(setting.getAppImage().getCpuFlexLowerLimit());
+				container.setScaleOutCpu(setting.getAppImage().getCpuFlexUpperLimit());
 			}
 
 			List<For> servicesFor = new ArrayList<For>();
@@ -153,11 +153,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 			}
 
-			crontainer.setServicesFor(servicesFor);
-			crontainer.setLogDir(setting.getAppImage().getLogMpPath());
-			crontainer.setDataDir(setting.getAppImage().getDataMpPath());
+			container.setServicesFor(servicesFor);
+			container.setLogDir(setting.getAppImage().getLogMpPath());
+			container.setDataDir(setting.getAppImage().getDataMpPath());
 			// 拼装json数据
-			containers.add(crontainer);
+			containers.add(container);
 		}
 		generalReq.setContainers(containers);
 
@@ -188,12 +188,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setClusterId(pcApp.getResCenterId().toString());
 		List<Container> containers = new ArrayList<Container>();
 		for (AppImageSettings setting : appImageList) {
-			Container crontainer = new Container();
-			crontainer.setContainerId(setting.getAppImage().getId().toString());
-			crontainer.setContainerName(setting.getAppImage().getContainerName());
-			crontainer.setInstances(setting.getAppImage().getInstanceCount());
-			crontainer.setImgFullName("redis");
-			crontainer.setImgVersion("3.0.5");
+			Container container = new Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setInstances(setting.getAppImage().getInstanceCount());
+			container.setImgFullName("redis");
+			container.setImgVersion("3.0.5");
+			containers.add(container);
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.upgrade(JSON.toString(generalReq));
@@ -220,9 +221,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setClusterId(pcApp.getResCenterId().toString());
 		List<Container> containers = new ArrayList<Container>();
 		for (AppImageSettings setting : appImageList) {
-			Container crontainer = new Container();
-			crontainer.setContainerId(setting.getAppImage().getId().toString());
-			crontainer.setContainerName(setting.getAppImage().getContainerName());
+			Container container = new Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			containers.add(container);
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
@@ -249,10 +251,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setClusterId(pcApp.getResCenterId().toString());
 		List<Container> containers = new ArrayList<Container>();
 		for (AppImageSettings setting : appImageList) {
-			Container crontainer = new Container();
-			crontainer.setContainerId(setting.getAppImage().getId().toString());
-			crontainer.setContainerName(setting.getAppImage().getContainerName());
-			crontainer.setInstances(setting.getAppImage().getInstanceCount());
+			Container container = new Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setInstances(setting.getAppImage().getInstanceCount());
+			containers.add(container);
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
@@ -279,10 +282,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setClusterId(pcApp.getResCenterId().toString());
 		List<Container> containers = new ArrayList<Container>();
 		for (AppImageSettings setting : appImageList) {
-			Container crontainer = new Container();
-			crontainer.setContainerId(setting.getAppImage().getId().toString());
-			crontainer.setContainerName(setting.getAppImage().getContainerName());
-			crontainer.setInstances(0);
+			Container container = new Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setInstances(0);
+			containers.add(container);
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
