@@ -1,6 +1,6 @@
 package com.aic.paas.task.rest.dev;
 
-import com.aic.paas.provider.ps.bean.PcAppTask;
+import com.aic.paas.task.bean.dep.PcAppTask;
 
 public interface PcAppTaskSvc {
 	

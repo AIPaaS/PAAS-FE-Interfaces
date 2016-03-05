@@ -19,6 +19,7 @@ import com.aic.paas.task.bean.dep.GeneralReq.Container.For;
 import com.aic.paas.task.bean.dep.Parameter;
 import com.aic.paas.task.bean.dep.PcApp;
 import com.aic.paas.task.bean.dep.PcAppImage;
+import com.aic.paas.task.bean.dep.PcAppTask;
 import com.aic.paas.task.bean.dep.PcKvPair;
 import com.aic.paas.task.bean.dev.CPcImage;
 import com.aic.paas.task.bean.dev.PcImage;
@@ -26,6 +27,7 @@ import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
 import com.aic.paas.task.rest.dep.PcAppImageSvc;
 import com.aic.paas.task.rest.dep.PcAppSvc;
+import com.aic.paas.task.rest.dev.PcAppTaskSvc;
 import com.aic.paas.task.rest.dev.PcImageSvc;
 import com.binary.core.util.BinaryUtils;
 import com.binary.json.JSON;
@@ -42,6 +44,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Autowired
 	PcImageSvc imageSvc;
+
+	@Autowired
+	PcAppTaskSvc pcAppTaskSvc;
 
 	@Autowired
 	IDeployServiceManager iDeployServiceManager;
@@ -159,9 +164,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		System.out.println(JSON.toString(generalReq));
 		String resStr = iDeployServiceManager.createLongRun(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
-		if(GeneralDeployResp.SUCCESS.equals(resp.getResultCode())){
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
-			
+			PcAppTask pcAppTask = new PcAppTask();
+			pcAppTaskSvc.saveOrUpdate(pcAppTask);
 		}
 		System.out.println(JSON.toString(resStr));
 		return resStr;
