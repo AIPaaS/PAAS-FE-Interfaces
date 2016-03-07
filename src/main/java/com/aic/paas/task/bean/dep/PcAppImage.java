@@ -3,6 +3,7 @@ package com.aic.paas.task.bean.dep;
 
 
 
+
 import com.binary.framework.bean.EntityBean;
 
 
@@ -29,6 +30,12 @@ public class PcAppImage implements EntityBean {
 	 * mapping-field: 镜像ID[IMAGE_ID]
 	 */
 	private Long imageId;
+
+
+	/**
+	 * mapping-field: 镜像[IMAGE]
+	 */
+	private String image;
 
 
 	/**
@@ -286,6 +293,14 @@ public class PcAppImage implements EntityBean {
 	}
 	public void setImageId(Long imageId) {
 		this.imageId = imageId;
+	}
+
+
+	public String getImage() {
+		return this.image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 
@@ -578,5 +593,8 @@ public class PcAppImage implements EntityBean {
 
 
 }
+
+
+
 
 
