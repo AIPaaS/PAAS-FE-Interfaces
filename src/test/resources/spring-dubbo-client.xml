@@ -36,6 +36,7 @@
 	<dubbox:rest id="DubboxRest_PcResCenterSvc" interface="com.aic.paas.task.rest.dep.PcResCenterSvc" client="DubboRestClient_DEP" />
 	<dubbox:rest id="DubboxRest_PcAppImageSvc" interface="com.aic.paas.task.rest.dep.PcAppImageSvc" client="DubboRestClient_DEP" />
 	<dubbox:rest id="DubboxRest_PcAppTaskSvc" interface="com.aic.paas.task.rest.dep.PcAppTaskSvc" client="DubboRestClient_DEP" />
+	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP" />
 	
 	<!-- dev -->
 	<dubbox:rest id="DubboxRest_PcImageSvc" interface="com.aic.paas.task.rest.dev.PcImageSvc" client="DubboRestClient_DEV" />
