@@ -26,6 +26,7 @@ import com.aic.paas.task.bean.dep.PcKvPair;
 import com.aic.paas.task.bean.dev.CPcImage;
 import com.aic.paas.task.bean.dev.PcImage;
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
+import com.aic.paas.task.peer.dep.bean.LogReq;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
 import com.aic.paas.task.rest.dep.PcAppDepHistorySvc;
 import com.aic.paas.task.rest.dep.PcAppImageSvc;
@@ -372,8 +373,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Override
 	public String fetchLog(Long appId, Long reqId, Long time) {
-		iDeployServiceManager.log("");
-		return null;
+		LogReq logReq = new LogReq();
+		logReq.setReqId(reqId.intValue());
+		logReq.setLastFetchTime(time);
+		String resp = iDeployServiceManager.log(JSON.toString(logReq));
+		return resp;
 	}
 
 }

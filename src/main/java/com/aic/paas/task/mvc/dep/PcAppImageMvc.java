@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.util.ControllerUtils;
 
 @Controller
 @RequestMapping("/dep/appimage")
@@ -77,7 +78,8 @@ public class PcAppImageMvc {
 	@RequestMapping("/pauseApp")
 	public void pause(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		appImagePeer.pauseApp(appId);
+		String resp = appImagePeer.pauseApp(appId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 }
