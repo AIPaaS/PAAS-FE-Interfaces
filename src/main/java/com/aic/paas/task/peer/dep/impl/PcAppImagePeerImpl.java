@@ -218,6 +218,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp);
 			writeAppDepHistory(appId, appVnoId, resp);
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		System.out.println(JSON.toString(resStr));
 		return resStr;
@@ -251,6 +255,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp);
 			writeAppDepHistory(appId, appVnoId, resp);
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
@@ -284,6 +292,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
@@ -316,8 +328,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			// write task log and so on...
-			// writeTaskLog(appId, appVnoId, resp);
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
@@ -350,10 +363,17 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			// write task log and so on...
-			// writeTaskLog(appId, appVnoId, resp);
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
+	}
+
+	@Override
+	public String fetchLog(Long appId, Long reqId, Long time) {
+		iDeployServiceManager.log("");
+		return null;
 	}
 
 }

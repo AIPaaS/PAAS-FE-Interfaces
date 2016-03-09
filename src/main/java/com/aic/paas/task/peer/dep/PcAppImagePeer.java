@@ -60,4 +60,10 @@ public interface PcAppImagePeer {
 	 */
 	public String pauseApp(Long appId);
 
+	/**
+	 * 获取应用日志
+	 * 
+	 * @param appId
+	 */
+	public String fetchLog(Long appId, Long reqId, Long time);
 }
