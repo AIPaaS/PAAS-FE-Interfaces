@@ -38,12 +38,14 @@
 	<dubbox:rest id="DubboxRest_PcAppTaskSvc" interface="com.aic.paas.task.rest.dep.PcAppTaskSvc" client="DubboRestClient_DEP" />
 	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP" />
 	<dubbox:rest id="DubboxRest_PcAppVersionSvc" interface="com.aic.paas.task.rest.dep.PcAppVersionSvc" client="DubboRestClient_DEP" />
+	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP" />
+	
 	<!-- dev -->
 	<dubbox:rest id="DubboxRest_PcImageSvc" interface="com.aic.paas.task.rest.dev.PcImageSvc" client="DubboRestClient_DEV" />
 		
 	<!--    be-am -->
 	<dubbo:application name="paas_dubbo_service"/>
-	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.rest.dep.IDeployServiceManager" url="${dubbox.rest.root.beam}"/>
+	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.rest.dep.IDeployServiceManager" url="${dubbox.rest.root.beam}" timeout="20000"/>
 	
 	
 </beans>

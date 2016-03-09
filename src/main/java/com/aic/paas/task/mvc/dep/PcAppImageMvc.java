@@ -3,6 +3,8 @@ package com.aic.paas.task.mvc.dep;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import com.binary.framework.util.ControllerUtils;
 @Controller
 @RequestMapping("/dep/appimage")
 public class PcAppImageMvc {
+	static final Logger logger = LoggerFactory.getLogger(PcAppImageMvc.class);
 
 	@Autowired
 	PcAppImagePeer appImagePeer;
@@ -26,13 +29,12 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/startDeploy")
 	public void startDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
-
-		System.out.println("===================== appId : " + appId);
-		System.out.println("===================== appVnoId : " + appVnoId);
-
+		logger.debug("===================== appId : " + appId);
+		logger.debug("===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.startDeploy(appId, appVnoId);
+		String resp = appImagePeer.startDeploy(appId, appVnoId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 	/**
