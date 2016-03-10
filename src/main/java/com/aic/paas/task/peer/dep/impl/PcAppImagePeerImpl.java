@@ -395,8 +395,27 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Override
 	public String appStatus(Long appId) {
-		GeneralReq generalReq = new GeneralReq(); 
-		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
+		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		if (appVnoId == null)
+			appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
+		GeneralReq generalReq = new GeneralReq();
+		generalReq.setAppId(appId + "");
+		List<GeneralReq.Container> containers = new ArrayList<>();
+		List<AppImageSettings> settings = getAppImageSettingsList(appId, appVnoId);
+		for (AppImageSettings setting : settings) {
+			if (setting.getAppImage() != null){
+				GeneralReq.Container container = new GeneralReq.Container();
+				container.setContainerName(setting.getAppImage().getContainerName());
+				containers.add(container);
+			}
+		}
+		generalReq.setContainers(containers);
+		String resStr = iDeployServiceManager.status(JSON.toString(generalReq));
 		return resStr;
 	}
 
