@@ -104,7 +104,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				PcImage image = null;
 				if (imageId != null)
 					image = imgmap.get(imageId);
-				else {
+				if (image == null) {
 					image = new PcImage();
 					image.setImageName(settings.getAppImage().getImage());
 				}
@@ -184,8 +184,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				containeIdList.add(image.getId().toString());
 			}
 			PcImage image = setting.getImage();
-			container.setImgFullName("redis");
-			container.setImgVersion("3.0.6");
+			container.setImgFullName(image.getImageName());
 			// crontainer.setDepends(containeIdList.toArray().toString());
 			container.setCpu(setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
@@ -248,8 +247,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setContainerId(setting.getAppImage().getId().toString());
 			container.setContainerName(setting.getAppImage().getContainerName());
 			container.setInstances(setting.getAppImage().getInstanceCount());
-			container.setImgFullName("redis");
-			container.setImgVersion("3.0.5");
+			PcAppImage pcAppImage = setting.getAppImage();
+			container.setImgFullName(pcAppImage.getImage());
 			containers.add(container);
 		}
 		generalReq.setContainers(containers);
