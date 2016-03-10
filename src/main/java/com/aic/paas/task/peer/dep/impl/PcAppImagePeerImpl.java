@@ -122,7 +122,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		pcAppTask.setAppVnoId(appVnoId);
 		pcAppTask.setStatus(2);
 		pcAppTask.setTaskStartTime(BinaryUtils.getNumberDateTime());
-		pcAppTaskSvc.saveOrUpdate(pcAppTask);
+		pcAppTaskSvc.save(pcAppTask);
 	}
 
 	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp) {
@@ -134,6 +134,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
 				BeanUtils.copyProperties(pcAppDepHistory, setting);
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
+				pcAppDepHistory.setAppId(null);
 				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 			} catch (Exception e) {
 				logger.error("", e);
@@ -146,6 +147,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	public String startDeploy(Long appId, Long appVnoId) {
 		logger.info("appId ++++:" + appId);
 		logger.info("appVnoId" + appVnoId);
+		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 
 		PcApp pcApp = appSvc.queryById(appId);
@@ -249,6 +251,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			containers.add(container);
 		}
 		generalReq.setContainers(containers);
+		logger.debug("upgrade req param is ====" + JSON.toString(generalReq));
 		String resStr = iDeployServiceManager.upgrade(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
@@ -273,6 +276,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
+		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 1);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -303,6 +307,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 2);
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
@@ -338,6 +343,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String pauseApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 3);
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info

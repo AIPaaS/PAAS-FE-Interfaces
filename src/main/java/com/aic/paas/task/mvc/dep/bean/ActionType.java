@@ -1,4 +1,4 @@
-package com.aic.paas.task.callback;
+package com.aic.paas.task.mvc.dep.bean;
 
 public enum ActionType {
 	deploy(1, "deploy"), start(2, "start"), stop(3, "stop"), upgrade(4, "upgrade"), scale(5, "scale"), destroy(6, "destroy");

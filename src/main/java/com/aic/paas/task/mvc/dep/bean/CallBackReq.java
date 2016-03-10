@@ -1,4 +1,4 @@
-package com.aic.paas.task.callback;
+package com.aic.paas.task.mvc.dep.bean;
 
 import java.util.List;
 
