@@ -296,7 +296,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-
+			writeTaskLog(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
@@ -307,12 +308,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
+		
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
 			return "";
 		}
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -333,6 +335,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			writeTaskLog(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
@@ -369,6 +373,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			writeTaskLog(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);

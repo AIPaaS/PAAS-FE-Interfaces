@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aic.paas.task.bean.dep.PcApp;
 import com.aic.paas.task.bean.dep.PcAppDepHistory;
@@ -49,51 +51,55 @@ public class CallbackMvc {
 	PcAppDepInstanceSvc pcAppDepInstanceSvc;
 
 	@RequestMapping("/callback")
-	public void callDeployServiceFinished(HttpServletRequest request, HttpServletResponse response, String param) {
+	public void callDeployServiceFinished(HttpServletRequest request, HttpServletResponse response, @RequestBody String param) {
 		logger.info("receive callback request , param is " + param);
 		CallBackReq callBackReq = JSON.toObject(param, CallBackReq.class);
 
-		if (ActionType.deploy.equals(callBackReq.getActionType())) {
-			PcAppTask pcAppTask = pcAppTaskSvc.queryById(callBackReq.getReqId());
-			Map<String, Long> idMap = getAppDepHistoryIdoiMap(callBackReq.getReqId().longValue());
-			int state = -1;
-			for (CallBackReq.Container container : callBackReq.getContainers()) {
-				String containerName = container.getContainerName();
-				Long appDepHistoryId = idMap.get(containerName);
-				if (appDepHistoryId == null) {
-					logger.error("cann't find app dep history id from container " + containerName);
-					continue;
-				}
-				for (CallBackReq.Container.Instance instance : container.getInstances()) {
-					PcAppDepInstance pcAppDepInstance = new PcAppDepInstance();
-					pcAppDepInstance.setAppDepHistoryId(appDepHistoryId);
-					pcAppDepInstance.setInstanceName(instance.getInstanceId());
-					pcAppDepInstance.setServerIp(instance.getHost());
-					pcAppDepInstanceSvc.saveOrUpdate(pcAppDepInstance);
-					int stateKey = InstanceStateType.keyOf(instance.getState());
-					if (stateKey > state)
-						state = stateKey;
-				}
-			}
-			PcApp pcApp = pcAppSvc.queryById(Long.parseLong(callBackReq.getAppId()));
-			if (state == InstanceStateType.RUNNING.getKey()) {
-				pcApp.setStatus(2);
-				pcAppTask.setStatus(3);
-			} else if ((state == InstanceStateType.STAGING.getKey()) || (state == InstanceStateType.FAILED.getKey())) {
-				// timeout failed
-				pcApp.setStatus(5);
-				pcAppTask.setStatus(4);
-			} else {
-				logger.error("no container callback , app is " + callBackReq.getAppId());
-			}
-			pcAppSvc.saveOrUpdate(pcApp);
-			pcAppTaskSvc.save(pcAppTask);
-		} else if (ActionType.destroy.equals(callBackReq.getActionType())) {
-			
-		} else {
+		if (ActionType.deploy.getName().equals(callBackReq.getActionType())) {
+			afterStart(callBackReq);
+		} else if (ActionType.destroy.getName().equals(callBackReq.getActionType())) {
 
+		} else if (ActionType.start.getName().equals(callBackReq.getActionType())) {
+			afterStart(callBackReq);
 		}
 		ControllerUtils.returnJson(request, response, true);
+	}
+
+	private void afterStart(CallBackReq callBackReq) {
+		PcAppTask pcAppTask = pcAppTaskSvc.queryById(callBackReq.getReqId());
+		Map<String, Long> idMap = getAppDepHistoryIdoiMap(callBackReq.getReqId().longValue());
+		int state = -1;
+		for (CallBackReq.Container container : callBackReq.getContainers()) {
+			String containerName = container.getContainerName();
+			Long appDepHistoryId = idMap.get(containerName);
+			if (appDepHistoryId == null) {
+				logger.error("cann't find app dep history id from container " + containerName);
+				continue;
+			}
+			for (CallBackReq.Container.Instance instance : container.getInstances()) {
+				PcAppDepInstance pcAppDepInstance = new PcAppDepInstance();
+				pcAppDepInstance.setAppDepHistoryId(appDepHistoryId);
+				pcAppDepInstance.setInstanceName(instance.getInstanceId());
+				pcAppDepInstance.setServerIp(instance.getHost());
+				pcAppDepInstanceSvc.saveOrUpdate(pcAppDepInstance);
+				int stateKey = InstanceStateType.keyOf(instance.getState());
+				if (stateKey > state)
+					state = stateKey;
+			}
+		}
+		PcApp pcApp = pcAppSvc.queryById(Long.parseLong(callBackReq.getAppId()));
+		if (state == InstanceStateType.RUNNING.getKey()) {
+			pcApp.setStatus(2);
+			pcAppTask.setStatus(3);
+		} else if ((state == InstanceStateType.STAGING.getKey()) || (state == InstanceStateType.FAILED.getKey())) {
+			// timeout failed
+			pcApp.setStatus(5);
+			pcAppTask.setStatus(4);
+		} else {
+			logger.error("no container callback , app is " + callBackReq.getAppId());
+		}
+		pcAppSvc.saveOrUpdate(pcApp);
+		pcAppTaskSvc.update(pcAppTask);
 	}
 
 	private Map<String, Long> getAppDepHistoryIdoiMap(long taskId) {
