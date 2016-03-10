@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aic.paas.task.bean.dep.PcApp;
 import com.aic.paas.task.bean.dep.PcAppDepHistory;
@@ -56,16 +55,20 @@ public class CallbackMvc {
 		CallBackReq callBackReq = JSON.toObject(param, CallBackReq.class);
 
 		if (ActionType.deploy.getName().equals(callBackReq.getActionType())) {
-			afterStart(callBackReq);
+			afterStart(callBackReq, 3);
 		} else if (ActionType.destroy.getName().equals(callBackReq.getActionType())) {
-
+			afterStart(callBackReq, 1);
 		} else if (ActionType.start.getName().equals(callBackReq.getActionType())) {
-			afterStart(callBackReq);
+			afterStart(callBackReq, 3);
+		} else if (ActionType.stop.getName().equals(callBackReq.getActionType())) {
+			afterStart(callBackReq, 4);
+		} else if (ActionType.upgrade.getName().equals(callBackReq.getActionType())) {
+			afterStart(callBackReq, 3);
 		}
 		ControllerUtils.returnJson(request, response, true);
 	}
 
-	private void afterStart(CallBackReq callBackReq) {
+	private void afterStart(CallBackReq callBackReq, int pcAppStatus) {
 		PcAppTask pcAppTask = pcAppTaskSvc.queryById(callBackReq.getReqId());
 		Map<String, Long> idMap = getAppDepHistoryIdoiMap(callBackReq.getReqId().longValue());
 		int state = -1;
@@ -89,14 +92,19 @@ public class CallbackMvc {
 		}
 		PcApp pcApp = pcAppSvc.queryById(Long.parseLong(callBackReq.getAppId()));
 		if (state == InstanceStateType.RUNNING.getKey()) {
-			pcApp.setStatus(2);
+			pcApp.setStatus(pcAppStatus);
 			pcAppTask.setStatus(3);
 		} else if ((state == InstanceStateType.STAGING.getKey()) || (state == InstanceStateType.FAILED.getKey())) {
 			// timeout failed
 			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
 		} else {
-			logger.error("no container callback , app is " + callBackReq.getAppId());
+			logger.info("no container callback , app is " + callBackReq.getAppId());
+			if (ActionType.destroy.getName().equals(callBackReq.getActionType())) {
+				pcApp.setStatus(1);
+			} else
+				pcApp.setStatus(4);
+			pcAppTask.setStatus(3);
 		}
 		pcAppSvc.saveOrUpdate(pcApp);
 		pcAppTaskSvc.update(pcAppTask);

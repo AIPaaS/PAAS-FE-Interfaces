@@ -128,13 +128,15 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp) {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
+		logger.info("write history count ....." + appImageList.size());
 		for (AppImageSettings setting : appImageList) {
 			PcAppDepHistory pcAppDepHistory = new PcAppDepHistory();
 			try {
 				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
 				BeanUtils.copyProperties(pcAppDepHistory, setting);
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
-				pcAppDepHistory.setAppId(null);
+				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerName());
+				pcAppDepHistory.setId(null);
 				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 			} catch (Exception e) {
 				logger.error("", e);
@@ -308,7 +310,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
-		
+
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
@@ -333,6 +335,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
+		logger.info("start app return " + resStr);
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp);
