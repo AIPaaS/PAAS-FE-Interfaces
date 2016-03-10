@@ -393,4 +393,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return resp;
 	}
 
+	@Override
+	public String appStatus(Long appId) {
+		GeneralReq generalReq = new GeneralReq(); 
+		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
+		return resStr;
+	}
+
 }

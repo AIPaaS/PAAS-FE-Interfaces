@@ -29,6 +29,7 @@ public class PcAppLogMvc {
 		CPcAppTask cPcAppTask = new CPcAppTask();
 		cPcAppTask.setAppId(appId);
 		Page<PcAppTask> page = pcAppTaskSvc.queryPage(pageNum, pageSize, cPcAppTask, "taskStartTime desc");
+		ControllerUtils.returnJson(request, response, page);
 	}
 
 	@RequestMapping("/log/query")
@@ -36,5 +37,10 @@ public class PcAppLogMvc {
 		String resp = pcAppImagePeer.fetchLog(appId, reqId, lastTime);
 		ControllerUtils.returnJson(request, response, resp);
 	}
-
+	
+	@RequestMapping("/log/status")
+	public void queryStatus(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		String resp = pcAppImagePeer.appStatus(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
 }
