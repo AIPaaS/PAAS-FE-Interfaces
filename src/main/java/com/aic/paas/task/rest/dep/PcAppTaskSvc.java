@@ -13,7 +13,7 @@ public interface PcAppTaskSvc {
 	 */
 	public void save(PcAppTask record);
 	
-//	public void update(PcAppTask record)
+	public void update(PcAppTask record);
 	
 	public PcAppTask queryById(Long id);
 	

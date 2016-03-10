@@ -28,5 +28,5 @@ public interface PcAppVersionSvc {
 
 	public void updateAppVersionStatus(Long appId, String version, int status);
 
-	public void updateAppVersionStatus(Long appVersionId, int status);
+	public void updateAppVersionStatusById(Long appVersionId, int status);
 }

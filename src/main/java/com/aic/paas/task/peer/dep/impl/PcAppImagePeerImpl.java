@@ -147,7 +147,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	public String startDeploy(Long appId, Long appVnoId) {
 		logger.info("appId ++++:" + appId);
 		logger.info("appVnoId" + appVnoId);
-		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 2);
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 
 		PcApp pcApp = appSvc.queryById(appId);
@@ -276,7 +276,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 1);
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -307,7 +307,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
-		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 2);
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
@@ -343,7 +343,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String pauseApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
-		pcAppVersionSvc.updateAppVersionStatus(appVnoId, 3);
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info

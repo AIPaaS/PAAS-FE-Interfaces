@@ -38,7 +38,7 @@ public class CallbackMvc {
 
 	@Autowired
 	PcAppTaskSvc pcAppTaskSvc;
-	
+
 	@Autowired
 	PcAppVersionSvc pcAppVersionSvc;
 
@@ -76,16 +76,20 @@ public class CallbackMvc {
 				}
 			}
 			PcApp pcApp = pcAppSvc.queryById(Long.parseLong(callBackReq.getAppId()));
-			if (state == InstanceStateType.RUNNING.getKey())
+			if (state == InstanceStateType.RUNNING.getKey()) {
 				pcApp.setStatus(2);
-			else if (state == InstanceStateType.STAGING.getKey()) {
-				// timeout
-			} else if (state == InstanceStateType.FAILED.getKey()) {
-				// failed
+				pcAppTask.setStatus(3);
+			} else if ((state == InstanceStateType.STAGING.getKey()) || (state == InstanceStateType.FAILED.getKey())) {
+				// timeout failed
+				pcApp.setStatus(5);
+				pcAppTask.setStatus(4);
+			} else {
+				logger.error("no container callback , app is " + callBackReq.getAppId());
 			}
 			pcAppSvc.saveOrUpdate(pcApp);
+			pcAppTaskSvc.save(pcAppTask);
 		} else if (ActionType.destroy.equals(callBackReq.getActionType())) {
-
+			
 		} else {
 
 		}
