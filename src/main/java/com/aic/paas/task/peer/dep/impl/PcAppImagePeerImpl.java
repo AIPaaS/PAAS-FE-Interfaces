@@ -406,7 +406,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			return "";
 		}
 		GeneralReq generalReq = new GeneralReq();
+		PcApp pcApp = appSvc.queryById(appId);
 		generalReq.setAppId(appId + "");
+		generalReq.setClusterId(pcApp.getResCenterId()+"");
 		List<GeneralReq.Container> containers = new ArrayList<>();
 		List<AppImageSettings> settings = getAppImageSettingsList(appId, appVnoId);
 		for (AppImageSettings setting : settings) {
