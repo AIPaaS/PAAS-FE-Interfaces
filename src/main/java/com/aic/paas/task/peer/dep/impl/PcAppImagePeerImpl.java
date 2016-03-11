@@ -351,12 +351,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String pauseApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
 			return "";
 		}
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
