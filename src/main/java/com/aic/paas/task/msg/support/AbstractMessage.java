@@ -63,7 +63,7 @@ public abstract class AbstractMessage<E extends EntityBean, F extends Condition>
 		cdt.setDataStatus(1);
 		List<BsSyncdataConfig> ls = syncSvc.queryList(cdt, null);
 		
-		if(ls == null) {
+		if(ls==null || ls.size()==0) {
 			throw new ServiceException(" not found SyncdataConfig by MsgType '"+type+"'! ");
 		}
 		
@@ -104,6 +104,7 @@ public abstract class AbstractMessage<E extends EntityBean, F extends Condition>
 	@Override
 	public void sendMssageBySync() {
 		MsgType msgType = getType();
+		logger.info("---------------sendMssageBySync ["+msgType+"] ----------------");
 		
 		BsSyncdataConfig cfg = getSyncdataConfig();
 		Long syncTime = cfg.getSyncTime();

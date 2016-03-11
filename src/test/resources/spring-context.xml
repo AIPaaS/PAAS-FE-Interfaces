@@ -41,12 +41,10 @@
     	</constructor-arg>
     	<constructor-arg>
 	    	<list>
-	    	<!-- 
 	    		<bean class="com.aic.paas.task.timer.SyncDataTimer" >
 			    	<property name="taskType" value="${task.sync.data.taskType}" />
 			    	<property name="expression" value="${task.sync.data.expression}" />
 			    </bean>
-			 -->
 	    	</list>
     	</constructor-arg>
     </bean>

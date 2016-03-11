@@ -16,7 +16,9 @@
     
     
     <bean class="com.aic.paas.task.msg.MessageFactory" />
-    <bean class="com.aic.paas.task.send.impl.NsqHttpMessageSender" />
+    <bean class="com.aic.paas.task.send.impl.NsqHttpMessageSender" >
+    	<property name="nsqRoot" value="${project.msmq.nsq.root}" />
+    </bean>
     <bean abstract="true" id="message.parent" >
     	<property name="pageSize" value="${project.sync.batch.size}" />
 		<property name="messageSender" ref="com.aic.paas.task.send.impl.NsqHttpMessageSender" />

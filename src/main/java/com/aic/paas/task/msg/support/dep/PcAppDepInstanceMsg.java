@@ -38,7 +38,7 @@ public class PcAppDepInstanceMsg extends AbstractMessage<PcAppDepInstance, CPcAp
 
 	@Override
 	public List<PcAppDepInstance> queryList(long pageNum, long pageSize,CPcAppDepInstance cdt, String orders) {
-		return appDepSvc.queryDepInstancePage((int)pageNum, (int)pageSize, cdt, orders);
+		return appDepSvc.queryDepInstancePage2((int)pageNum, (int)pageSize, cdt, orders);
 	}
 
 	
