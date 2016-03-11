@@ -3,16 +3,20 @@ package com.aic.paas.task.mvc.dep;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.util.ControllerUtils;
 
 @Controller
 @RequestMapping("/dep/appimage")
 public class PcAppImageMvc {
+	static final Logger logger = LoggerFactory.getLogger(PcAppImageMvc.class);
 
 	@Autowired
 	PcAppImagePeer appImagePeer;
@@ -25,13 +29,12 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/startDeploy")
 	public void startDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
-
-		System.out.println("===================== appId : " + appId);
-		System.out.println("===================== appVnoId : " + appVnoId);
-
+		logger.debug("===================== appId : " + appId);
+		logger.debug("===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.startDeploy(appId, appVnoId);
+		String resp = appImagePeer.startDeploy(appId, appVnoId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 	/**
@@ -42,9 +45,12 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/reDeploy")
 	public void reDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+		logger.debug("===================== appId : " + appId);
+		logger.debug("===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.reDeploy(appId, appVnoId);
+		String resp = appImagePeer.reDeploy(appId, appVnoId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 	/**
@@ -55,7 +61,8 @@ public class PcAppImageMvc {
 	@RequestMapping("/stopDeploy")
 	public void stopDeploy(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		appImagePeer.destroyDeploy(appId);
+		String resp = appImagePeer.destroyDeploy(appId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 	/**
@@ -66,7 +73,8 @@ public class PcAppImageMvc {
 	@RequestMapping("/startApp")
 	public void start(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		appImagePeer.startApp(appId);
+		String resp = appImagePeer.startApp(appId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 	/**
@@ -77,7 +85,8 @@ public class PcAppImageMvc {
 	@RequestMapping("/pauseApp")
 	public void pause(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		appImagePeer.pauseApp(appId);
+		String resp = appImagePeer.pauseApp(appId);
+		ControllerUtils.returnJson(request, response, resp);
 	}
 
 }

@@ -11,7 +11,9 @@ public interface PcAppTaskSvc {
 	 * @param record : PcAppTask数据记录
 	 * @return 当前记录主键[id]值
 	 */
-	public Long saveOrUpdate(PcAppTask record);
+	public void save(PcAppTask record);
+	
+	public void update(PcAppTask record);
 	
 	public PcAppTask queryById(Long id);
 	

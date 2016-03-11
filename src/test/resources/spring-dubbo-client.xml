@@ -13,6 +13,7 @@
 	
 	<bean id="DubboRestClient_SYS" class="com.binary.framework.dubbo.rest.DubboRestClient">
 		<constructor-arg value="${dubbox.rest.root.sys}" />
+<!-- 		<property name="timeout"></property> -->
 	</bean>
 	<bean id="DubboRestClient_DEV" class="com.binary.framework.dubbo.rest.DubboRestClient">
 		<constructor-arg value="${dubbox.rest.root.dev}" />
@@ -29,21 +30,24 @@
 	
 	
 	<!-- dep -->
-	<dubbox:rest id="DubboxRest_PcAppDeploySvc" interface="com.aic.paas.task.rest.dep.PcAppDeploySvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcAppSvc" interface="com.aic.paas.task.rest.dep.PcAppSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcDataCenterSvc" interface="com.aic.paas.task.rest.dep.PcDataCenterSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcNetZoneSvc" interface="com.aic.paas.task.rest.dep.PcNetZoneSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcResCenterSvc" interface="com.aic.paas.task.rest.dep.PcResCenterSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcAppImageSvc" interface="com.aic.paas.task.rest.dep.PcAppImageSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcAppTaskSvc" interface="com.aic.paas.task.rest.dep.PcAppTaskSvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP" />
-	<dubbox:rest id="DubboxRest_PcAppVersionSvc" interface="com.aic.paas.task.rest.dep.PcAppVersionSvc" client="DubboRestClient_DEP" />
+	<dubbox:rest id="DubboxRest_PcAppDeploySvc" interface="com.aic.paas.task.rest.dep.PcAppDeploySvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppSvc" interface="com.aic.paas.task.rest.dep.PcAppSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcDataCenterSvc" interface="com.aic.paas.task.rest.dep.PcDataCenterSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcNetZoneSvc" interface="com.aic.paas.task.rest.dep.PcNetZoneSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcResCenterSvc" interface="com.aic.paas.task.rest.dep.PcResCenterSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppImageSvc" interface="com.aic.paas.task.rest.dep.PcAppImageSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppTaskSvc" interface="com.aic.paas.task.rest.dep.PcAppTaskSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppVersionSvc" interface="com.aic.paas.task.rest.dep.PcAppVersionSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.rest.dep.PcAppDepHistorySvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppDepInstanceSvc" interface="com.aic.paas.task.rest.dep.PcAppDepInstanceSvc" client="DubboRestClient_DEP"/>
+	
 	<!-- dev -->
 	<dubbox:rest id="DubboxRest_PcImageSvc" interface="com.aic.paas.task.rest.dev.PcImageSvc" client="DubboRestClient_DEV" />
 		
 	<!--    be-am -->
 	<dubbo:application name="paas_dubbo_service"/>
-	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.rest.dep.IDeployServiceManager" url="${dubbox.rest.root.beam}"/>
+	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.rest.dep.IDeployServiceManager" url="${dubbox.rest.root.beam}" timeout="${dubbox.rest.client.timeout}"/>
 	
 	
 </beans>

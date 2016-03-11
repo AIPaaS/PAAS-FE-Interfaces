@@ -66,4 +66,11 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 */
 	public String fetchLog(Long appId, Long reqId, Long time);
+	
+	/**
+	 * 获取应用状态信息
+	 * 
+	 * @param appId
+	 */
+	public String appStatus(Long appId);
 }

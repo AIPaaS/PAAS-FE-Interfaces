@@ -11,6 +11,7 @@ import com.aic.paas.task.bean.dep.CPcAppTask;
 import com.aic.paas.task.bean.dep.PcAppTask;
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.aic.paas.task.rest.dep.PcAppTaskSvc;
+import com.binary.framework.util.ControllerUtils;
 import com.binary.jdbc.Page;
 
 @Controller
@@ -19,7 +20,7 @@ public class PcAppLogMvc {
 
 	@Autowired
 	PcAppTaskSvc pcAppTaskSvc;
-	
+
 	@Autowired
 	PcAppImagePeer pcAppImagePeer;
 
@@ -28,11 +29,18 @@ public class PcAppLogMvc {
 		CPcAppTask cPcAppTask = new CPcAppTask();
 		cPcAppTask.setAppId(appId);
 		Page<PcAppTask> page = pcAppTaskSvc.queryPage(pageNum, pageSize, cPcAppTask, "taskStartTime desc");
+		ControllerUtils.returnJson(request, response, page);
 	}
 
 	@RequestMapping("/log/query")
-	public void queryLog(HttpServletRequest request, HttpServletResponse response, Integer pageNum, Integer pageSize, Long appId, Long reqId, Long lastTime) {
-//		pcAppImagePeer
+	public void queryLog(HttpServletRequest request, HttpServletResponse response, Long appId, Long reqId, Long lastTime) {
+		String resp = pcAppImagePeer.fetchLog(appId, reqId, lastTime);
+		ControllerUtils.returnJson(request, response, resp);
 	}
-
+	
+	@RequestMapping("/log/status")
+	public void queryStatus(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		String resp = pcAppImagePeer.appStatus(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
 }
