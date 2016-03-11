@@ -27,6 +27,7 @@ import com.aic.paas.task.rest.dep.PcAppDepInstanceSvc;
 import com.aic.paas.task.rest.dep.PcAppSvc;
 import com.aic.paas.task.rest.dep.PcAppTaskSvc;
 import com.aic.paas.task.rest.dep.PcAppVersionSvc;
+import com.binary.core.util.BinaryUtils;
 import com.binary.framework.util.ControllerUtils;
 import com.binary.json.JSON;
 
@@ -106,6 +107,7 @@ public class CallbackMvc {
 				pcApp.setStatus(4);
 			pcAppTask.setStatus(3);
 		}
+		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
 		pcAppSvc.saveOrUpdate(pcApp);
 		pcAppTaskSvc.update(pcAppTask);
 	}
