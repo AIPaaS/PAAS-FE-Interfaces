@@ -25,6 +25,7 @@ import com.aic.paas.task.bean.dep.PcAppTask;
 import com.aic.paas.task.bean.dep.PcKvPair;
 import com.aic.paas.task.bean.dev.CPcImage;
 import com.aic.paas.task.bean.dev.PcImage;
+import com.aic.paas.task.mvc.dep.bean.ActionType;
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.aic.paas.task.peer.dep.bean.LogReq;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
@@ -115,11 +116,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return settingsList;
 	}
 
-	private void writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp) {
+	private void writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp, ActionType actionType) {
 		PcAppTask pcAppTask = new PcAppTask();
 		pcAppTask.setId(resp.getReqId().longValue());
 		pcAppTask.setAppId(appId);
 		pcAppTask.setAppVnoId(appVnoId);
+		pcAppTask.setTaskUserName(actionType.getName());
 		pcAppTask.setStatus(2);
 		pcAppTask.setTaskStartTime(BinaryUtils.getNumberDateTime());
 		pcAppTaskSvc.save(pcAppTask);
@@ -219,7 +221,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
-			writeTaskLog(appId, appVnoId, resp);
+			writeTaskLog(appId, appVnoId, resp, ActionType.deploy);
 			writeAppDepHistory(appId, appVnoId, resp);
 
 			// update app status
@@ -257,7 +259,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
-			writeTaskLog(appId, appVnoId, resp);
+			writeTaskLog(appId, appVnoId, resp, ActionType.upgrade);
 			writeAppDepHistory(appId, appVnoId, resp);
 
 			// update app status
@@ -297,7 +299,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			writeTaskLog(appId, appVnoId, resp);
+			writeTaskLog(appId, appVnoId, resp, ActionType.destroy);
 			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
@@ -337,7 +339,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		logger.info("start app return " + resStr);
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			writeTaskLog(appId, appVnoId, resp);
+			writeTaskLog(appId, appVnoId, resp, ActionType.start);
 			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
@@ -375,7 +377,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			writeTaskLog(appId, appVnoId, resp);
+			writeTaskLog(appId, appVnoId, resp, ActionType.stop);
 			writeAppDepHistory(appId, appVnoId, resp);
 			// update app status
 			pcApp.setStatus(2);
@@ -408,7 +410,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		List<GeneralReq.Container> containers = new ArrayList<>();
 		List<AppImageSettings> settings = getAppImageSettingsList(appId, appVnoId);
 		for (AppImageSettings setting : settings) {
-			if (setting.getAppImage() != null){
+			if (setting.getAppImage() != null) {
 				GeneralReq.Container container = new GeneralReq.Container();
 				container.setContainerName(setting.getAppImage().getContainerName());
 				containers.add(container);
