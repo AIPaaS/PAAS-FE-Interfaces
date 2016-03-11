@@ -13,6 +13,7 @@
 	
 	<bean id="DubboRestClient_SYS" class="com.binary.framework.dubbo.rest.DubboRestClient">
 		<constructor-arg value="${dubbox.rest.root.sys}" />
+<!-- 		<property name="timeout"></property> -->
 	</bean>
 	<bean id="DubboRestClient_DEV" class="com.binary.framework.dubbo.rest.DubboRestClient">
 		<constructor-arg value="${dubbox.rest.root.dev}" />
