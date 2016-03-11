@@ -48,42 +48,36 @@ public class PcAppImageMvc {
 	}
 
 	/**
-	 * 停止部署
+	 * 销毁部署
 	 * 
 	 * @param appId
-	 * @param appVnoId
 	 */
 	@RequestMapping("/stopDeploy")
-	public void stopDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+	public void stopDeploy(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.destroyDeploy(appId, appVnoId);
+		appImagePeer.destroyDeploy(appId);
 	}
 
 	/**
 	 * 开始运行app
 	 * 
 	 * @param appId
-	 * @param appVnoId
 	 */
 	@RequestMapping("/startApp")
-	public void start(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+	public void start(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.startApp(appId, appVnoId);
+		appImagePeer.startApp(appId);
 	}
 
 	/**
 	 * 暂停运行app
 	 * 
 	 * @param appId
-	 * @param appVnoId
 	 */
 	@RequestMapping("/pauseApp")
-	public void pause(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+	public void pause(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
-		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
-		appImagePeer.pauseApp(appId, appVnoId);
+		appImagePeer.pauseApp(appId);
 	}
 
 }

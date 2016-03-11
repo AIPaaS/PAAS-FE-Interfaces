@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.aic.paas.task.bean.dep.GeneralReq.Container;
 import com.aic.paas.task.bean.dep.GeneralReq.Container.For;
 import com.aic.paas.task.bean.dep.Parameter;
 import com.aic.paas.task.bean.dep.PcApp;
+import com.aic.paas.task.bean.dep.PcAppDepHistory;
 import com.aic.paas.task.bean.dep.PcAppImage;
 import com.aic.paas.task.bean.dep.PcAppTask;
 import com.aic.paas.task.bean.dep.PcKvPair;
@@ -25,9 +27,11 @@ import com.aic.paas.task.bean.dev.CPcImage;
 import com.aic.paas.task.bean.dev.PcImage;
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
+import com.aic.paas.task.rest.dep.PcAppDepHistorySvc;
 import com.aic.paas.task.rest.dep.PcAppImageSvc;
 import com.aic.paas.task.rest.dep.PcAppSvc;
 import com.aic.paas.task.rest.dep.PcAppTaskSvc;
+import com.aic.paas.task.rest.dep.PcAppVersionSvc;
 import com.aic.paas.task.rest.dev.PcImageSvc;
 import com.binary.core.util.BinaryUtils;
 import com.binary.json.JSON;
@@ -38,6 +42,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Autowired
 	PcAppImageSvc appImageSvc;
+
+	@Autowired
+	PcAppDepHistorySvc pcAppDepHistorySvc;
+
+	@Autowired
+	PcAppVersionSvc pcAppVersionSvc;
 
 	@Autowired
 	PcAppSvc appSvc;
@@ -77,19 +87,59 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 			CPcImage imgcdt = new CPcImage();
 			imgcdt.setIds(imageids.toArray(new Long[0]));
-			List<PcImage> images = imageSvc.queryImageList(imgcdt, null);
+			List<PcImage> images;
+			try {
+				images = imageSvc.queryImageList(imgcdt, null);
+			} catch (Exception e) {
+				// in case of there is no dev service at all
+				images = new ArrayList<>();
+			}
 
 			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
 
 			for (int i = 0; i < settingsList.size(); i++) {
 				AppImageSettings settings = settingsList.get(i);
 				Long imageId = settings.getAppImage().getImageId();
-				PcImage image = imgmap.get(imageId);
+				PcImage image = null;
+				if (imageId != null)
+					image = imgmap.get(imageId);
+				else {
+					image = new PcImage();
+					image.setImageName(settings.getAppImage().getImage());
+				}
 				settings.setImage(image);
 			}
 		}
 
 		return settingsList;
+	}
+
+	private void writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp) {
+		PcAppTask pcAppTask = new PcAppTask();
+		pcAppTask.setId(resp.getReqId().longValue());
+		pcAppTask.setAppId(appId);
+		pcAppTask.setAppVnoId(appVnoId);
+		pcAppTask.setStatus(2);
+		pcAppTask.setTaskStartTime(BinaryUtils.getNumberDateTime());
+		pcAppTaskSvc.saveOrUpdate(pcAppTask);
+	}
+
+	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp) {
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+		PcApp pcApp = appSvc.queryById(appId);
+		for (AppImageSettings setting : appImageList) {
+			PcAppDepHistory pcAppDepHistory = new PcAppDepHistory();
+			try {
+				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
+				BeanUtils.copyProperties(pcAppDepHistory, setting);
+				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
+				pcAppDepHistory.setId(null);
+				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+		}
+
 	}
 
 	@Override
@@ -129,6 +179,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			for (PcAppImage image : dependList) {
 				containeIdList.add(image.getId().toString());
 			}
+			PcImage image = setting.getImage();
 			container.setImgFullName("redis");
 			container.setImgVersion("3.0.6");
 			// crontainer.setDepends(containeIdList.toArray().toString());
@@ -150,7 +201,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
 			for (AppImageSvcInfo imageSvcInfo : callServiceList) {
 				imageSvcInfo.getSvc();
-
 			}
 
 			container.setServicesFor(servicesFor);
@@ -166,10 +216,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
-			PcAppTask pcAppTask = new PcAppTask();
-			pcAppTask.setId(resp.getReqId().longValue());
-			pcAppTask.setAppId(appId);
-			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+			writeTaskLog(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp);
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		System.out.println(JSON.toString(resStr));
 		return resStr;
@@ -201,16 +253,26 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
-			PcAppTask pcAppTask = new PcAppTask();
-			pcAppTask.setId(resp.getReqId().longValue());
-			pcAppTask.setAppId(appId);
-			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+			writeTaskLog(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp);
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
 
 	@Override
-	public String destroyDeploy(Long appId, Long appVnoId) {
+	public String destroyDeploy(Long appId) {
+		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		if (appVnoId == null)
+			appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -230,17 +292,22 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.destroyLongRun(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			// write task log and so on...
-			PcAppTask pcAppTask = new PcAppTask();
-			pcAppTask.setId(resp.getReqId().longValue());
-			pcAppTask.setAppId(appId);
-			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
 
 	@Override
-	public String startApp(Long appId, Long appVnoId) {
+	public String startApp(Long appId) {
+		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -261,17 +328,21 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.start(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			// write task log and so on...
-			PcAppTask pcAppTask = new PcAppTask();
-			pcAppTask.setId(resp.getReqId().longValue());
-			pcAppTask.setAppId(appId);
-			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
 	}
 
 	@Override
-	public String pauseApp(Long appId, Long appVnoId) {
+	public String pauseApp(Long appId) {
+		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -292,13 +363,17 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		String resStr = iDeployServiceManager.stop(JSON.toString(generalReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
-			// write task log and so on...
-			PcAppTask pcAppTask = new PcAppTask();
-			pcAppTask.setId(resp.getReqId().longValue());
-			pcAppTask.setAppId(appId);
-			pcAppTaskSvc.saveOrUpdate(pcAppTask);
+			// update app status
+			pcApp.setStatus(2);
+			appSvc.saveOrUpdate(pcApp);
 		}
 		return resStr;
+	}
+
+	@Override
+	public String fetchLog(Long appId, Long reqId, Long time) {
+		iDeployServiceManager.log("");
+		return null;
 	}
 
 }
