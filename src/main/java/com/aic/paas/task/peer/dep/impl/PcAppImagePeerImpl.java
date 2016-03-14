@@ -170,7 +170,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			List<Parameter> attrs = new ArrayList<Parameter>();
 			List<PcKvPair> paramList = setting.getParams();
@@ -249,7 +249,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setInstances(setting.getAppImage().getInstanceCount());
 			PcAppImage pcAppImage = setting.getAppImage();
 			container.setImgFullName(pcAppImage.getImage());
@@ -332,7 +332,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setInstances(setting.getAppImage().getInstanceCount());
 			containers.add(container);
 		}
@@ -371,7 +371,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setInstances(0);
 			containers.add(container);
 		}
@@ -416,7 +416,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : settings) {
 			if (setting.getAppImage() != null) {
 				GeneralReq.Container container = new GeneralReq.Container();
-				container.setContainerName(setting.getAppImage().getContainerName());
+				container.setContainerName(setting.getAppImage().getContainerFullName());
 				containers.add(container);
 			}
 		}
@@ -441,7 +441,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			generalTimerReq.setStart(setting.getAppImage().getTimerStartTime() + "");
 			generalTimerReq.setPeriod("T" + setting.getAppImage().getTimerExp() + "S");
@@ -498,31 +498,147 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Override
 	public String reDeployTimer(Long appId, Long appVnoId) {
-		return null;
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+
+		PcApp pcApp = appSvc.queryById(appId);
+		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
+		generalTimerReq.setAppId(appId + "");
+		generalTimerReq.setAppName(pcApp.getAppCode());
+		generalTimerReq.setAppNameCN(pcApp.getAppName());
+		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
+		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		List<GeneralTimerReq.Container> containers = new ArrayList<GeneralTimerReq.Container>();
+		for (AppImageSettings setting : appImageList) {
+			GeneralTimerReq.Container container = new GeneralTimerReq.Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
+			generalTimerReq.setStart(setting.getAppImage().getTimerStartTime() + "");
+			generalTimerReq.setPeriod("T" + setting.getAppImage().getTimerExp() + "S");
+
+			List<PcAppImage> dependList = setting.getDependImages();
+			List<String> containeIdList = new ArrayList<String>();
+			for (PcAppImage image : dependList) {
+				containeIdList.add(image.getId().toString());
+			}
+			PcImage image = setting.getImage();
+			container.setImgFullName(image.getImageName());
+			// crontainer.setDepends(containeIdList.toArray().toString());
+			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
+			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
+			// 硬盘大小单位是GB 需要转换成MB X1024
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+
+			// List<For> servicesFor = new ArrayList<For>();
+			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
+			for (AppImageSvcInfo imageSvcInfo : callServiceList) {
+				imageSvcInfo.getSvc();
+			}
+
+			container.setLogDir(setting.getAppImage().getLogMpPath());
+			container.setDataDir(setting.getAppImage().getDataMpPath());
+			// 拼装json数据
+			containers.add(container);
+		}
+
+		String resStr = iDeployServiceManager.upgradeTimer(JSON.toString(generalTimerReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		PcAppTask pcAppTask = writeTaskLog(appId, appVnoId, resp, ActionType.upgrade);
+		writeAppDepHistory(appId, appVnoId, resp);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// update app status
+			pcApp.setStatus(3);
+			pcAppTask.setStatus(4);
+		} else {
+			pcApp.setStatus(5);
+			pcAppTask.setStatus(4);
+		}
+		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
+		appSvc.saveOrUpdate(pcApp);
+		pcAppTaskSvc.update(pcAppTask);
+		return resStr;
 	}
 
 	@Override
 	public String destroyDeployTimer(Long appId) {
-		// TODO Auto-generated method stub
-		return null;
+		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		if (appVnoId == null)
+			appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
+		PcApp pcApp = appSvc.queryById(appId);
+
+		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
+		generalTimerReq.setAppId(appId + "");
+		generalTimerReq.setAppName(pcApp.getAppCode());
+		generalTimerReq.setAppNameCN(pcApp.getAppName());
+		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
+		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+
+		String resStr = iDeployServiceManager.destroyTimer(JSON.toString(generalTimerReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		PcAppTask pcAppTask = writeTaskLog(appId, appVnoId, resp, ActionType.destroy);
+		writeAppDepHistory(appId, appVnoId, resp);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// update app status
+			pcApp.setStatus(3);
+			pcAppTask.setStatus(4);
+		} else {
+			pcApp.setStatus(5);
+			pcAppTask.setStatus(4);
+		}
+		return resStr;
 	}
 
 	@Override
 	public String starTimertApp(Long appId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
+		PcApp pcApp = appSvc.queryById(appId);
 
-	@Override
-	public String pauseAppTimer(Long appId) {
-		// TODO Auto-generated method stub
-		return null;
+		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
+		generalTimerReq.setAppId(appId + "");
+		generalTimerReq.setAppName(pcApp.getAppCode());
+		generalTimerReq.setAppNameCN(pcApp.getAppName());
+		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
+		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+
+		String resStr = iDeployServiceManager.startTimer(JSON.toString(generalTimerReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		PcAppTask pcAppTask = writeTaskLog(appId, appVnoId, resp, ActionType.start);
+		writeAppDepHistory(appId, appVnoId, resp);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// update app status
+			pcApp.setStatus(3);
+			pcAppTask.setStatus(4);
+		} else {
+			pcApp.setStatus(5);
+			pcAppTask.setStatus(4);
+		}
+		return resStr;
 	}
 
 	@Override
 	public String appTimerStatus(Long appId) {
-		// TODO Auto-generated method stub
-		return null;
+		PcApp pcApp = appSvc.queryById(appId);
+
+		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
+		generalTimerReq.setAppId(appId + "");
+		generalTimerReq.setAppName(pcApp.getAppCode());
+		generalTimerReq.setAppNameCN(pcApp.getAppName());
+		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
+		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+
+		String resStr = iDeployServiceManager.startTimer(JSON.toString(generalTimerReq));
+		return resStr;
 	}
 
 }

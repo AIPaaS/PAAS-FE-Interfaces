@@ -105,13 +105,6 @@ public interface PcAppImagePeer {
 	public String starTimertApp(Long appId);
 
 	/**
-	 * 暂停运行定时应用
-	 * 
-	 * @param appId
-	 */
-	public String pauseAppTimer(Long appId);
-
-	/**
 	 * 获取定时应用状态信息
 	 * 
 	 * @param appId

@@ -145,15 +145,4 @@ public class PcAppImageMvc {
 		ControllerUtils.returnJson(request, response, resp);
 	}
 
-	/**
-	 * 暂停运行定时app
-	 * 
-	 * @param appId
-	 */
-	@RequestMapping("/timer/pauseApp")
-	public void pauseTimer(HttpServletRequest request, HttpServletResponse response, Long appId) {
-		BinaryUtils.checkEmpty(appId, "appId");
-		String resp = appImagePeer.pauseAppTimer(appId);
-		ControllerUtils.returnJson(request, response, resp);
-	}
 }
