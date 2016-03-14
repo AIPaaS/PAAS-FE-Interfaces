@@ -13,11 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.task.bean.dep.AppImageSettings;
 import com.aic.paas.task.bean.dep.AppImageSvcInfo;
-import com.aic.paas.task.bean.dep.GeneralDeployResp;
-import com.aic.paas.task.bean.dep.GeneralReq;
-import com.aic.paas.task.bean.dep.GeneralReq.Container;
-import com.aic.paas.task.bean.dep.GeneralReq.Container.For;
-import com.aic.paas.task.bean.dep.Parameter;
 import com.aic.paas.task.bean.dep.PcApp;
 import com.aic.paas.task.bean.dep.PcAppDepHistory;
 import com.aic.paas.task.bean.dep.PcAppImage;
@@ -27,7 +22,13 @@ import com.aic.paas.task.bean.dev.CPcImage;
 import com.aic.paas.task.bean.dev.PcImage;
 import com.aic.paas.task.mvc.dep.bean.ActionType;
 import com.aic.paas.task.peer.dep.PcAppImagePeer;
+import com.aic.paas.task.peer.dep.bean.GeneralDeployResp;
+import com.aic.paas.task.peer.dep.bean.GeneralReq;
+import com.aic.paas.task.peer.dep.bean.GeneralReq.Container;
+import com.aic.paas.task.peer.dep.bean.GeneralReq.Container.For;
+import com.aic.paas.task.peer.dep.bean.GeneralTimerReq;
 import com.aic.paas.task.peer.dep.bean.LogReq;
+import com.aic.paas.task.peer.dep.bean.Parameter;
 import com.aic.paas.task.rest.dep.IDeployServiceManager;
 import com.aic.paas.task.rest.dep.PcAppDepHistorySvc;
 import com.aic.paas.task.rest.dep.PcAppImageSvc;
@@ -116,7 +117,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return settingsList;
 	}
 
-	private void writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp, ActionType actionType) {
+	private PcAppTask writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp, ActionType actionType) {
 		PcAppTask pcAppTask = new PcAppTask();
 		pcAppTask.setId(resp.getReqId().longValue());
 		pcAppTask.setAppId(appId);
@@ -125,6 +126,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		pcAppTask.setStatus(2);
 		pcAppTask.setTaskStartTime(BinaryUtils.getNumberDateTime());
 		pcAppTaskSvc.save(pcAppTask);
+		return pcAppTask;
 	}
 
 	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp) {
@@ -408,7 +410,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralReq generalReq = new GeneralReq();
 		PcApp pcApp = appSvc.queryById(appId);
 		generalReq.setAppId(appId + "");
-		generalReq.setClusterId(pcApp.getResCenterId()+"");
+		generalReq.setClusterId(pcApp.getResCenterId() + "");
 		List<GeneralReq.Container> containers = new ArrayList<>();
 		List<AppImageSettings> settings = getAppImageSettingsList(appId, appVnoId);
 		for (AppImageSettings setting : settings) {
@@ -421,6 +423,106 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalReq.setContainers(containers);
 		String resStr = iDeployServiceManager.status(JSON.toString(generalReq));
 		return resStr;
+	}
+
+	@Override
+	public String startTimerDeploy(Long appId, Long appVnoId) {
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+
+		PcApp pcApp = appSvc.queryById(appId);
+		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
+		generalTimerReq.setAppId(appId + "");
+		generalTimerReq.setAppName(pcApp.getAppCode());
+		generalTimerReq.setAppNameCN(pcApp.getAppName());
+		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
+		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		List<GeneralTimerReq.Container> containers = new ArrayList<GeneralTimerReq.Container>();
+		for (AppImageSettings setting : appImageList) {
+			GeneralTimerReq.Container container = new GeneralTimerReq.Container();
+			container.setContainerId(setting.getAppImage().getId().toString());
+			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
+			generalTimerReq.setStart(setting.getAppImage().getTimerStartTime() + "");
+			generalTimerReq.setPeriod("T" + setting.getAppImage().getTimerExp() + "S");
+			// List<Parameter> attrs = new ArrayList<Parameter>();
+			// List<PcKvPair> paramList = setting.getParams();
+			// for (PcKvPair pair : paramList) {
+			// Parameter pa = new Parameter();
+			// pa.setKey(pair.getKvKey());
+			// pa.setValue(pair.getKvVal());
+			// }
+			List<PcAppImage> dependList = setting.getDependImages();
+
+			List<String> containeIdList = new ArrayList<String>();
+			for (PcAppImage image : dependList) {
+				containeIdList.add(image.getId().toString());
+			}
+			PcImage image = setting.getImage();
+			container.setImgFullName(image.getImageName());
+			// crontainer.setDepends(containeIdList.toArray().toString());
+			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
+			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
+			// 硬盘大小单位是GB 需要转换成MB X1024
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+
+			// List<For> servicesFor = new ArrayList<For>();
+			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
+			for (AppImageSvcInfo imageSvcInfo : callServiceList) {
+				imageSvcInfo.getSvc();
+			}
+
+			container.setLogDir(setting.getAppImage().getLogMpPath());
+			container.setDataDir(setting.getAppImage().getDataMpPath());
+			// 拼装json数据
+			containers.add(container);
+		}
+
+		String resStr = iDeployServiceManager.createTimer(JSON.toString(generalTimerReq));
+		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
+		PcAppTask pcAppTask = writeTaskLog(appId, appVnoId, resp, ActionType.deploy);
+		writeAppDepHistory(appId, appVnoId, resp);
+		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
+			// update app status
+			pcApp.setStatus(3);
+			pcAppTask.setStatus(4);
+		} else {
+			pcApp.setStatus(5);
+			pcAppTask.setStatus(4);
+		}
+		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
+		appSvc.saveOrUpdate(pcApp);
+		pcAppTaskSvc.update(pcAppTask);
+		return resStr;
+	}
+
+	@Override
+	public String reDeployTimer(Long appId, Long appVnoId) {
+		return null;
+	}
+
+	@Override
+	public String destroyDeployTimer(Long appId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String starTimertApp(Long appId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String pauseAppTimer(Long appId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String appTimerStatus(Long appId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.aic.paas.task.peer.dep.bean;
 
-import com.aic.paas.task.bean.dep.GeneralReq;
-
 public class LogReq extends GeneralReq {
 	private Long lastFetchTime;
 	private Integer reqId;

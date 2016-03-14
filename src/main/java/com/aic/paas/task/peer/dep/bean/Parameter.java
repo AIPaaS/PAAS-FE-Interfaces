@@ -1,4 +1,4 @@
-package com.aic.paas.task.bean.dep;
+package com.aic.paas.task.peer.dep.bean;
 
 public class Parameter {
 	private String key;
