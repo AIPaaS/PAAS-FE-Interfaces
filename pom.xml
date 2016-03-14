@@ -36,6 +36,14 @@
             </plugin>  
             
 	  		<plugin>
+	  			<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<encoding>utf-8</encoding>
+					</configuration>
+				</plugin>
 	  			<artifactId>maven-assembly-plugin</artifactId>
 		  		<version>2.2-beta-5</version>
 				<executions>
