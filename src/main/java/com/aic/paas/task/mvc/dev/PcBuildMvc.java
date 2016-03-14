@@ -17,7 +17,7 @@ public class PcBuildMvc {
 	
 	static final Logger logger = LoggerFactory.getLogger(PcBuildMvc.class);
 	
-	@RequestMapping(value="post")
+	/*@RequestMapping(value="post")
 	@ResponseBody
 	public String post(@RequestBody String param) {		
 		
@@ -33,12 +33,17 @@ public class PcBuildMvc {
 		return JSON.toString(deresp);		
 		
 		
-	}
+	}*/
 	
 	
 	
-	
-	@RequestMapping(value="delete")
+	/**
+	 * aic.tsd_hyh  2016.03.14
+	 * 删除构建定义，掉对方接口
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="deleteBuild")
 	@ResponseBody
 	public String delete(@RequestBody String param) {	
 	
@@ -49,15 +54,13 @@ public class PcBuildMvc {
 		//异常处理
 		
 		DemoResponse deresp = new DemoResponse();		
-		deresp.setNamespace("delete");
-		
+		//deresp.setNamespace("deleteBuild");
+		deresp.setStatus("success");  // "status": "success", //error
 		return JSON.toString(deresp);		
-		
-		
 	}
 	
 	
-	@RequestMapping(value="put")
+	/*@RequestMapping(value="put")
 	@ResponseBody
 	public String put(@RequestBody String param) {
 		
@@ -73,6 +76,6 @@ public class PcBuildMvc {
 		return JSON.toString(deresp);		
 				
 		
-	}
+	}*/
 
 }

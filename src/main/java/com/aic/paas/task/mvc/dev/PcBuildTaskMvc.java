@@ -17,7 +17,14 @@ public class PcBuildTaskMvc {
 	
 	static final Logger logger = LoggerFactory.getLogger(PcBuildTaskMvc.class);
 	
-	@RequestMapping(value="update")
+	
+	/**
+	 * aic.tsd_hyh  2016.03.14
+	 * 构建中止，掉对方接口
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value="stopBuilding")
 	@ResponseBody
 	public String post(@RequestBody String param) {		
 		
@@ -27,18 +34,18 @@ public class PcBuildTaskMvc {
 		//业务逻辑
 		//异常处理
 		
+		//HttpClientUtil.sendPostRequest
+		
 		DemoResponse deresp = new DemoResponse();		
-		deresp.setNamespace("post");
-		
+		//deresp.setNamespace("update");
+		deresp.setStatus("success");  // "status": "success", //error
 		return JSON.toString(deresp);		
-		
-		
 	}
 	
 	
 	
 	
-	@RequestMapping(value="delete")
+	/*@RequestMapping(value="delete")
 	@ResponseBody
 	public String delete(@RequestBody String param) {	
 	
@@ -51,7 +58,7 @@ public class PcBuildTaskMvc {
 		DemoResponse deresp = new DemoResponse();		
 		deresp.setNamespace("delete");
 		return JSON.toString(deresp);		
-	}
+	}*/
 	
 	
 	
