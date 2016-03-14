@@ -10,26 +10,26 @@ import com.binary.framework.test.TestTemplate;
 public class MessageTriggerSvcTest extends TestTemplate {
 
 	
-	
-	MessageTriggerSvc svc;
-	
-	
-	@Before
-	public void init() {
-		svc = getBean(MessageTriggerSvc.class);
-	}
-	
-	
-	
-	@Test
-	public void sendAllMessage() throws Throwable {
-		MsgType msgType = MsgType.APP;
-		svc.sendAllMessage(msgType);
-		
-		
-		
-		Thread.sleep(10000);
-	}
+//	
+//	MessageTriggerSvc svc;
+//	
+//	
+//	@Before
+//	public void init() {
+//		svc = getBean(MessageTriggerSvc.class);
+//	}
+//	
+//	
+//	
+//	@Test
+//	public void sendAllMessage() throws Throwable {
+//		MsgType msgType = MsgType.APP;
+//		svc.sendAllMessage(msgType);
+//		
+//		
+//		
+//		Thread.sleep(10000);
+//	}
 	
 	
 	
