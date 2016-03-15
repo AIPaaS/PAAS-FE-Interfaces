@@ -4,7 +4,10 @@ package com.aic.paas.task.peer.dev.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aic.paas.task.mvc.dev.bean.PcBuildResponse;
 import com.aic.paas.task.peer.dev.PcBuildPeer;
+import com.aic.paas.task.util.http.HttpClientUtil;
+import com.binary.json.JSON;
 
 public class PcBuildPeerImpl implements PcBuildPeer {
 
@@ -23,8 +26,11 @@ public class PcBuildPeerImpl implements PcBuildPeer {
 	
 	@Override
 	public String removePcBuildApi(String param) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String url = buildManagementUrl+"/v1/builds";
+		String rpc = HttpClientUtil.sendDeleteRequest(url, param);
+		PcBuildResponse buildRes = JSON.toObject(rpc, PcBuildResponse.class);
+		return buildRes.getStatus();
 	}
 
 	
