@@ -13,15 +13,13 @@ import com.aic.paas.task.bean.dep.CPcAppMgr;
 import com.aic.paas.task.bean.dep.CPcAppVersion;
 import com.aic.paas.task.bean.dep.PcAppMgr;
 import com.aic.paas.task.bean.dep.PcAppVersion;
-import com.aic.paas.task.bean.sys.CSysOp;
-import com.aic.paas.task.bean.sys.SysOp;
 import com.aic.paas.task.msg.MsgType;
 import com.aic.paas.task.msg.support.AbstractMessage;
 import com.aic.paas.task.rest.dep.PcAppSvc;
 import com.aic.paas.task.rest.sys.SysOpSvc;
 import com.binary.core.util.BinaryUtils;
 
-public class PcAppMgrMsg  extends AbstractMessage<AppMgr, CSysOp> {
+public class PcAppMgrMsg  extends AbstractMessage<AppMgr, CPcAppMgr> {
 
 	
 	@Autowired
@@ -44,28 +42,22 @@ public class PcAppMgrMsg  extends AbstractMessage<AppMgr, CSysOp> {
 	
 	
 	@Override
-	public Class<CSysOp> getConditionClass() {
-		return CSysOp.class;
+	public Class<CPcAppMgr> getConditionClass() {
+		return CPcAppMgr.class;
 	}
 	
 	
 	
 	
-	private List<AppMgr> toAppMgrList(List<SysOp> opls) {
+	private List<AppMgr> toAppMgrList(Long[] opIds, Long lastTime) {
 		List<AppMgr> mgrls = new ArrayList<AppMgr>();
 		
-		if(opls.size() > 0) {
-			Long time = BinaryUtils.getNumberDateTime();
-			
-			Long[] opIds = new Long[opls.size()];
-			for(int i=0; i<opls.size(); i++) {
-				SysOp op = opls.get(i);
-				opIds[i] = op.getId();
-				
+		if(opIds.length > 0) {
+			for(int i=0; i<opIds.length; i++) {
 				AppMgr am = new AppMgr();
-				am.setId(op.getId());
-				am.setCreateTime(time-1);
-				am.setModifyTime(time);
+				am.setId(opIds[i]);
+				am.setCreateTime(lastTime-1);
+				am.setModifyTime(lastTime);
 				mgrls.add(am);
 			}
 			
@@ -124,21 +116,32 @@ public class PcAppMgrMsg  extends AbstractMessage<AppMgr, CSysOp> {
 	
 
 	@Override
-	public List<AppMgr> queryList(long pageNum, long pageSize, CSysOp cdt,String orders) {
-		if(cdt != null) cdt.setStartModifyTime(0l);
-		
-		List<SysOp> opls = opSvc.queryPage2((int)pageNum, (int)pageSize, cdt, orders);
-		return toAppMgrList(opls);
+	public List<AppMgr> queryList(long pageNum, long pageSize, CPcAppMgr cdt,String orders) {
+		//List<SysOp> opls = opSvc.queryPage2((int)pageNum, (int)pageSize, cdt, orders);
+		return queryList(cdt, orders);
 	}
 
 
 	
 	
 	@Override
-	public List<AppMgr> queryList(CSysOp cdt, String orders) {
-		if(cdt != null) cdt.setStartModifyTime(0l);
-		List<SysOp> opls = opSvc.queryList(cdt, orders);
-		return toAppMgrList(opls);
+	public List<AppMgr> queryList(CPcAppMgr cdt, String orders) {
+		List<PcAppMgr> ls = appSvc.queryAppMgrList(cdt, orders);
+		Set<Long> opIds = new HashSet<Long>();
+		Long lastTime = 0l;
+		
+		for(int i=0; i<ls.size(); i++) {
+			PcAppMgr p = ls.get(i);
+			Long userId = p.getUserId();
+			opIds.add(userId);
+			
+			Long time = p.getModifyTime();
+			if(time > lastTime) {
+				lastTime = time;
+			}
+		}
+		
+		return toAppMgrList(opIds.toArray(new Long[0]), lastTime);
 	}
 	
 	
