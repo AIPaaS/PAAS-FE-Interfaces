@@ -76,6 +76,56 @@ public class HttpClientUtil {
 
     }
     
+    /**
+     * HTTP GET请求
+     * @param url
+     * @param param
+     * @return
+     */
+    public static String sendGetRequest(String url, String param)  {
+    	logger.info("url :" + url);
+    	logger.info("param contents:" + param);
+    	CloseableHttpClient httpclient = null;
+    	CloseableHttpResponse response = null;
+    	StringBuffer buffer = new StringBuffer();
+        try {
+        	 httpclient = HttpClients.createDefault();        	 
+        	 HttpGetWithBody httpGet = new HttpGetWithBody(new URL(url).toURI());
+             StringEntity dataEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
+             httpGet.setEntity(dataEntity);
+             response = httpclient.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));                
+                String tempStr;
+                while ((tempStr = reader.readLine()) != null){
+                    buffer.append(tempStr);
+                }
+                logger.info("response contents:" + buffer.toString());
+            } 
+            else {
+            	throw new RuntimeException("error code " + response.getStatusLine().getStatusCode()
+                        + ":" + response.getStatusLine().getReasonPhrase());
+            }
+        }catch(Exception e){        	
+        	logger.error(e.getMessage(),e);
+        	return "error";
+        } finally {
+        	try {
+        		if(response != null ){
+        			response.close();    			
+        		}
+        		if(httpclient != null ){
+        			httpclient.close();    			
+        		}
+        	} catch (IOException e) {
+	        	logger.error(e.getMessage(),e);
+	        	return "error";
+			}
+        }
+        return buffer.toString();
+
+    }
     
     
     /**

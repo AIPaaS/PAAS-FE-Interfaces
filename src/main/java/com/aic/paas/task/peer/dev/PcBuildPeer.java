@@ -10,4 +10,13 @@ public interface PcBuildPeer {
 	 * @return
 	 */
 	public String removePcBuildApi(String param);
+	
+	/**
+	 * 查询单条构建记录
+	 * @param namespace
+	 * @param repo_name
+	 * @param build_id
+	 * @return
+	 */
+	public String queryTaskRecord(String namespace, String repo_name, String build_id);
 }
