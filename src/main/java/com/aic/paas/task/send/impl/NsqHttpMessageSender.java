@@ -60,7 +60,7 @@ public class NsqHttpMessageSender extends AbstractMessageSender {
 			logger.error("ERROR", tx);
 		}
 		
-		return tx != null;
+		return tx == null;
 	}
 	
 	

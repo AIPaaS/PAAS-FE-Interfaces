@@ -113,7 +113,7 @@ public class CallbackMvc {
 	}
 
 	private Map<String, Long> getAppDepHistoryIdoiMap(long taskId) {
-		Map<String, Long> result = new HashMap<>();
+		Map<String, Long> result = new HashMap<String, Long>();
 		List<PcAppDepHistory> appDepHistorys = pcAppDepHistorySvc.queryByTaskId(taskId);
 		if (CollectionUtils.isNotEmpty(appDepHistorys)) {
 			for (PcAppDepHistory pcAppDepHistory : appDepHistorys) {

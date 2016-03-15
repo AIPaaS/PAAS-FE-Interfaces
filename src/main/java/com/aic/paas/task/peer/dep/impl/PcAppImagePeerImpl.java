@@ -94,7 +94,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				images = imageSvc.queryImageList(imgcdt, null);
 			} catch (Exception e) {
 				// in case of there is no dev service at all
-				images = new ArrayList<>();
+				images = new ArrayList<PcImage>();
 			}
 
 			Map<Long, PcImage> imgmap = BinaryUtils.toObjectMap(images, "ID");
@@ -409,7 +409,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		PcApp pcApp = appSvc.queryById(appId);
 		generalReq.setAppId(appId + "");
 		generalReq.setClusterId(pcApp.getResCenterId()+"");
-		List<GeneralReq.Container> containers = new ArrayList<>();
+		List<GeneralReq.Container> containers = new ArrayList<Container>();
 		List<AppImageSettings> settings = getAppImageSettingsList(appId, appVnoId);
 		for (AppImageSettings setting : settings) {
 			if (setting.getAppImage() != null) {

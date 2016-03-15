@@ -117,6 +117,8 @@ public abstract class AbstractMessage<E extends EntityBean, F extends Condition>
 		
 		BMProxy<F> cdtproxy = BMProxy.getInstance(getConditionClass());
 		F cdt = cdtproxy.newInstance();
+		boolean hasDataStatus = cdtproxy.containsKey("dataStatuss");
+		Integer[] dataStatuss = new Integer[]{0,1};
 		
 		Long lastId = 0l;
 		long count = 0;
@@ -126,6 +128,7 @@ public abstract class AbstractMessage<E extends EntityBean, F extends Condition>
 		while(true) {
 			cdtproxy.set("startModifyTime", syncTime);
 			cdtproxy.set("startId", lastId);
+			if(hasDataStatus) cdtproxy.set("dataStatuss", dataStatuss);
 			
 			List<E> ls = queryList(1, this.pageSize, cdt, " MODIFY_TIME, ID ");
 			count += firstQuery ? ls.size() : ls.size()-1;

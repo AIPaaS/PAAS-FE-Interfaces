@@ -40,6 +40,8 @@ public class SysOpMsg  extends AbstractMessage<SysOp, CSysOp> {
 	
 	@Override
 	public List<SysOp> queryList(long pageNum, long pageSize, CSysOp cdt, String orders) {
+		if(cdt == null) cdt = new CSysOp();
+		cdt.setOpKind(2);	//1=平台用户		2=租户用户
 		return opSvc.queryPage2((int)pageNum, (int)pageSize, cdt, orders);
 	}
 
@@ -51,6 +53,7 @@ public class SysOpMsg  extends AbstractMessage<SysOp, CSysOp> {
 	
 	@Override
 	public List<SysOp> queryList(CSysOp cdt, String orders) {
+		cdt.setOpKind(2);	//1=平台用户		2=租户用户
 		return opSvc.queryList(cdt, orders);
 	}
 	
