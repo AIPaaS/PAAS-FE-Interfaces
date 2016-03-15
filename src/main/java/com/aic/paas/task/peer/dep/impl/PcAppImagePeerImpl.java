@@ -432,7 +432,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		PcApp pcApp = appSvc.queryById(appId);
 		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
 		generalTimerReq.setAppId(appId + "");
-		
+
 		generalTimerReq.setAppName(pcApp.getAppCode());
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
@@ -466,7 +466,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
 
 			// List<For> servicesFor = new ArrayList<For>();
 			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
@@ -510,6 +510,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		generalTimerReq.setRetries(0);
+		generalTimerReq.setCommond("");
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
 			container.setContainerId(setting.getAppImage().getId().toString());
@@ -571,7 +573,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		PcApp pcApp = appSvc.queryById(appId);
 
 		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
@@ -589,6 +590,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// update app status
 			pcApp.setStatus(3);
 			pcAppTask.setStatus(4);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		} else {
 			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
