@@ -43,27 +43,14 @@ public class PcBuildTaskMvc {
 
 	@RequestMapping("/queryTaskRecord")
 	@ResponseBody
-	public String queryTaskRecord(@RequestBody String param) {
+	public String queryTaskRecord(@RequestBody String param) throws Exception {
 		BinaryUtils.checkEmpty(param, "param");
 		JSONObject data = new JSONObject(param);
 		String repo_name = data.getString("repo_name");
 		String namespace = data.getString("namespace");
 		String build_id = data.getString("build_id");
-		JSONObject resultInfo = new JSONObject();
-		resultInfo.put("namespace", "asiainfo");
-		resultInfo.put("repo_name", repo_name);
-		resultInfo.put("build_id", build_id);
-		resultInfo.put("building", true);
-		resultInfo.put("duration", 8);
-		resultInfo.put("started_at", "2015-09-02T08:17:42.581Z");
-		resultInfo.put("status", "success");
-		resultInfo.put("stdout",
-				"Started by user admin " + "Building in workspace /var/jenkins_home/workspace/test\r\n"
-						+ "[test] $ /bin/sh -xe /tmp/hudson7038042263921764692.sh\r\n"
-						+ " echo /var/jenkins_home/workspace/test\r\n" + "/var/jenkins_home/workspace/test\r\n"
-						+ "Notifying upstream projects of job completion\r\n" + "Finished: SUCCESS");
-		// return buildTaskPeer.queryTaskRecord(namespace, repo_name, build_id);
-		return resultInfo.toString();
+		return buildTaskPeer.queryTaskRecord(namespace, repo_name, build_id);
+
 
 	}
 

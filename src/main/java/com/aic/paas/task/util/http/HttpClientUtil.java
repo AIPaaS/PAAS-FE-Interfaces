@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,54 +78,57 @@ public class HttpClientUtil {
     }
     
     /**
-     * HTTP GET请求
+     * 向指定URL发送GET方法的请求
+     * 
      * @param url
+     *            发送请求的URL
      * @param param
-     * @return
+     *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return URL 所代表远程资源的响应结果
+     * @throws Exception 
      */
-    public static String sendGetRequest(String url, String param)  {
-    	logger.info("url :" + url);
-    	logger.info("param contents:" + param);
-    	CloseableHttpClient httpclient = null;
-    	CloseableHttpResponse response = null;
-    	StringBuffer buffer = new StringBuffer();
+    public static String sendGet(String url, String param) throws Exception {
+        String result = "";
+        BufferedReader in = null;
         try {
-        	 httpclient = HttpClients.createDefault();        	 
-        	 HttpGetWithBody httpGet = new HttpGetWithBody(new URL(url).toURI());
-             StringEntity dataEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
-             httpGet.setEntity(dataEntity);
-             response = httpclient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                HttpEntity entity = response.getEntity();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));                
-                String tempStr;
-                while ((tempStr = reader.readLine()) != null){
-                    buffer.append(tempStr);
-                }
-                logger.info("response contents:" + buffer.toString());
-            } 
-            else {
-            	throw new RuntimeException("error code " + response.getStatusLine().getStatusCode()
-                        + ":" + response.getStatusLine().getReasonPhrase());
+            String urlNameString = url + "?" + param;
+            URL realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            URLConnection connection = realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+            // 获取所有响应头字段
+//            Map<String, List<String>> map = connection.getHeaderFields();
+            // 遍历所有的响应头字段
+//            for (String key : map.keySet()) {
+//                System.out.println(key + "--->" + map.get(key));
+//            }
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
             }
-        }catch(Exception e){        	
-        	logger.error(e.getMessage(),e);
-        	return "error";
-        } finally {
-        	try {
-        		if(response != null ){
-        			response.close();    			
-        		}
-        		if(httpclient != null ){
-        			httpclient.close();    			
-        		}
-        	} catch (IOException e) {
-	        	logger.error(e.getMessage(),e);
-	        	return "error";
-			}
+        } catch (Exception e) {
+        	throw e;
         }
-        return buffer.toString();
-
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return result;
     }
     
     
