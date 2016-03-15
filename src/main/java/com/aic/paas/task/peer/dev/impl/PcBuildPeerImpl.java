@@ -1,6 +1,8 @@
 package com.aic.paas.task.peer.dev.impl;
 
 
+import java.io.UnsupportedEncodingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +28,18 @@ public class PcBuildPeerImpl implements PcBuildPeer {
 
 	
 	@Override
-	public String removePcBuildApi(String param) {
+	public String removePcBuildApi(String params) {
 		
 		String url = buildManagementUrl+"/v1/builds";
-		String rpc = HttpClientUtil.sendDeleteRequest(url, param);
+		String param = "";
+		try {
+			param = java.net.URLEncoder.encode(params,"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} 
+		/*String rpc = HttpClientUtil.sendDeleteRequest(url, param);// namespace={SSS}&repo_name={tes1}
 		PcBuildResponse buildRes = JSON.toObject(rpc, PcBuildResponse.class);
-		//return buildRes.getStatus();
+		return buildRes.getStatus();*/
 		return "success";
 	}
 	
