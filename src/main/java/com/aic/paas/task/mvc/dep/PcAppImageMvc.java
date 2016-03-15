@@ -29,8 +29,8 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/startDeploy")
 	public void startDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
-		logger.debug("===================== appId : " + appId);
-		logger.debug("===================== appVnoId : " + appVnoId);
+		logger.debug("long run deploy===================== appId : " + appId);
+		logger.debug("long run deploy===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
 		String resp = appImagePeer.startDeploy(appId, appVnoId);
@@ -97,8 +97,8 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/timer/startDeploy")
 	public void startTimerDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
-		logger.debug("===================== appId : " + appId);
-		logger.debug("===================== appVnoId : " + appVnoId);
+		logger.info("timer deploy===================== appId : " + appId);
+		logger.info("timer deploy===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
 		String resp = appImagePeer.startTimerDeploy(appId, appVnoId);

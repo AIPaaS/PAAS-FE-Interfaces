@@ -427,19 +427,21 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Override
 	public String startTimerDeploy(Long appId, Long appVnoId) {
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 
 		PcApp pcApp = appSvc.queryById(appId);
 		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
 		generalTimerReq.setAppId(appId + "");
+		
 		generalTimerReq.setAppName(pcApp.getAppCode());
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
-		List<GeneralTimerReq.Container> containers = new ArrayList<GeneralTimerReq.Container>();
+		// set default commond & retries
+		generalTimerReq.setRetries(0);
+		generalTimerReq.setCommond("");
+		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
-			GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
 			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
@@ -464,7 +466,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
 
 			// List<For> servicesFor = new ArrayList<For>();
 			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
@@ -474,9 +476,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 			container.setLogDir(setting.getAppImage().getLogMpPath());
 			container.setDataDir(setting.getAppImage().getDataMpPath());
-			// 拼装json数据
-			containers.add(container);
+			break;
 		}
+		generalTimerReq.setContainer(container);
 
 		String resStr = iDeployServiceManager.createTimer(JSON.toString(generalTimerReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
@@ -486,6 +488,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// update app status
 			pcApp.setStatus(3);
 			pcAppTask.setStatus(4);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		} else {
 			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
@@ -507,9 +510,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
-		List<GeneralTimerReq.Container> containers = new ArrayList<GeneralTimerReq.Container>();
+		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
-			GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
 			container.setContainerName(setting.getAppImage().getContainerFullName());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
@@ -537,9 +539,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 			container.setLogDir(setting.getAppImage().getLogMpPath());
 			container.setDataDir(setting.getAppImage().getDataMpPath());
-			// 拼装json数据
-			containers.add(container);
+			break;
 		}
+		generalTimerReq.setContainer(container);
 
 		String resStr = iDeployServiceManager.upgradeTimer(JSON.toString(generalTimerReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
