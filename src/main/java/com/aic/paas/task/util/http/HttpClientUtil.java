@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -149,8 +150,8 @@ public class HttpClientUtil {
     	StringBuffer buffer = new StringBuffer();
         try {
         	 httpclient = HttpClients.createDefault();        	 
-        	 HttpPutWithBody httpput = new HttpPutWithBody(new URL(url).toURI());
-             StringEntity dataEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
+        	 HttpPut httpput = new HttpPut(new URL(url).toURI());
+             StringEntity  dataEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
              httpput.setEntity(dataEntity);
              response = httpclient.execute(httpput);
             if (response.getStatusLine().getStatusCode() == 200) {
