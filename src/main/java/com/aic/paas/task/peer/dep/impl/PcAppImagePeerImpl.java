@@ -620,6 +620,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
+		for (AppImageSettings setting : appImageList) {
+			container.setContainerName(setting.getAppImage().getContainerFullName());
+		}
+		generalTimerReq.setContainer(container);
 
 		String resStr = iDeployServiceManager.startTimer(JSON.toString(generalTimerReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
@@ -638,6 +644,14 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Override
 	public String appTimerStatus(Long appId) {
+		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
+		if (appVnoId == null)
+			appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+		if (appVnoId == null) {
+			logger.error("can't find app " + appId + " version info");
+			// TODO: write some return info
+			return "";
+		}
 		PcApp pcApp = appSvc.queryById(appId);
 
 		GeneralTimerReq generalTimerReq = new GeneralTimerReq();
@@ -646,6 +660,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
+		for (AppImageSettings setting : appImageList) {
+			container.setContainerName(setting.getAppImage().getContainerFullName());
+		}
+		generalTimerReq.setContainer(container);
 
 		String resStr = iDeployServiceManager.startTimer(JSON.toString(generalTimerReq));
 		return resStr;
