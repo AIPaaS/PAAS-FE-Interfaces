@@ -54,6 +54,9 @@
     <bean class="com.aic.paas.task.peer.dev.impl.PcBuildTaskPeerImpl" >
     	 <property name="buildManagementUrl" value="${buildManagement.api.url}" />
     </bean>
+    <bean class="com.aic.paas.task.peer.dev.impl.PcBuildDefPeerImpl" >
+    	 <property name="buildManagementUrl" value="${buildManagement.api.url}" />
+    </bean>
         
     
 </beans>
