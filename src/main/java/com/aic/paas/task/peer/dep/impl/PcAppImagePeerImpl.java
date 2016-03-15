@@ -487,7 +487,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// update app status
 			pcApp.setStatus(3);
-			pcAppTask.setStatus(4);
+			pcAppTask.setStatus(3);
 			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		} else {
 			pcApp.setStatus(5);
@@ -551,14 +551,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		writeAppDepHistory(appId, appVnoId, resp);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// update app status
-			pcApp.setStatus(3);
-			pcAppTask.setStatus(4);
+			pcAppTask.setStatus(3);
 		} else {
-			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
 		}
 		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
-		appSvc.saveOrUpdate(pcApp);
 		pcAppTaskSvc.update(pcAppTask);
 		return resStr;
 	}
@@ -581,6 +578,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		generalTimerReq.setAppNameCN(pcApp.getAppName());
 		generalTimerReq.setClusterId(pcApp.getResCenterId().toString());
 		generalTimerReq.setDataCenterId(pcApp.getDataCenterId().toString());
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
+		for (AppImageSettings setting : appImageList) {
+			container.setContainerName(setting.getAppImage().getContainerFullName());
+		}
+		generalTimerReq.setContainer(container);
 
 		String resStr = iDeployServiceManager.destroyTimer(JSON.toString(generalTimerReq));
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
@@ -588,13 +591,16 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		writeAppDepHistory(appId, appVnoId, resp);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// update app status
-			pcApp.setStatus(3);
-			pcAppTask.setStatus(4);
+			pcApp.setStatus(1);
+			pcAppTask.setStatus(3);
 			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		} else {
 			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
 		}
+		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
+		appSvc.saveOrUpdate(pcApp);
+		pcAppTaskSvc.update(pcAppTask);
 		return resStr;
 	}
 
@@ -621,12 +627,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		writeAppDepHistory(appId, appVnoId, resp);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// update app status
-			pcApp.setStatus(3);
-			pcAppTask.setStatus(4);
+			pcAppTask.setStatus(3);
 		} else {
-			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
 		}
+		pcAppTask.setTaskEndTime(BinaryUtils.getNumberDateTime());
+		pcAppTaskSvc.update(pcAppTask);
 		return resStr;
 	}
 
