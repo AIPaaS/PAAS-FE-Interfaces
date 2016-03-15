@@ -38,7 +38,7 @@ public class PcBuildTaskMvc {
 		//HttpClientUtil.sendPostRequest
 		//DemoResponse deresp = new DemoResponse();		
 		//deresp.setNamespace("update");
-		//deresp.setStatus("success");  // "status": "success", //error
+		//deresp.setStatus("success");  // "status": "aborted",  //error 为不存在此构建
 		//return JSON.toString(deresp);		
 	}
 	

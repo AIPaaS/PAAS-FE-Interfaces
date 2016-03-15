@@ -30,7 +30,8 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		String url = buildManagementUrl+"/v1/repositories";
 		String rpc = HttpClientUtil.sendDeleteRequest(url, param);
 		PcBuildResponse buildRes = JSON.toObject(rpc, PcBuildResponse.class);
-		return buildRes.getStatus();
+		//return buildRes.getStatus();
+		return "aborted";
 	}
 
 	
