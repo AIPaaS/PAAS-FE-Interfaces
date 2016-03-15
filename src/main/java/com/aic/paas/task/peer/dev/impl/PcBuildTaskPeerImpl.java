@@ -8,6 +8,13 @@ import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
 public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 
 	static final Logger logger = LoggerFactory.getLogger(PcBuildTaskPeerImpl.class);
+	
+	private String buildManagementUrl;
+	public void setBuildManagementUrl(String buildManagementUrl) {
+		if(buildManagementUrl != null) {
+			this.buildManagementUrl = buildManagementUrl.trim();
+		}
+	}
 
 	//@Autowired
 	//PcAppImageSvc appImageSvc;

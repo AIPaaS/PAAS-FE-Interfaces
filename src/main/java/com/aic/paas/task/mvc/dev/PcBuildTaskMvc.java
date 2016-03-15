@@ -1,18 +1,14 @@
 package com.aic.paas.task.mvc.dev;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.aic.paas.task.mvc.dev.bean.DemoResponse;
+import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
 import com.binary.core.util.BinaryUtils;
-import com.binary.json.JSON;
 import com.binary.json.JSONObject;
 
 @Controller
@@ -20,6 +16,9 @@ import com.binary.json.JSONObject;
 public class PcBuildTaskMvc {
 	
 	static final Logger logger = LoggerFactory.getLogger(PcBuildTaskMvc.class);
+	
+	@Autowired
+	PcBuildTaskPeer buildTaskPeer ;
 	
 	
 	/**
@@ -31,38 +30,20 @@ public class PcBuildTaskMvc {
 	@RequestMapping(value="stopBuilding")
 	@ResponseBody
 	public String post(@RequestBody String param) {		
-		
-		System.out.println("--------------------------------------------");
 		System.out.println(param);
 		
-		//业务逻辑
-		//异常处理
+		String req = buildTaskPeer.stopPcBuildTaskApi(param);
+		return req;
 		
 		//HttpClientUtil.sendPostRequest
-		
-		DemoResponse deresp = new DemoResponse();		
+		//DemoResponse deresp = new DemoResponse();		
 		//deresp.setNamespace("update");
-		deresp.setStatus("success");  // "status": "success", //error
-		return JSON.toString(deresp);		
+		//deresp.setStatus("success");  // "status": "success", //error
+		//return JSON.toString(deresp);		
 	}
 	
 	
 	
-	
-	/*@RequestMapping(value="delete")
-	@ResponseBody
-	public String delete(@RequestBody String param) {	
-	
-		System.out.println("--------------------------------------------");
-		System.out.println(param);
-		
-		//业务逻辑
-		//异常处理
-		
-		DemoResponse deresp = new DemoResponse();		
-		deresp.setNamespace("delete");
-		return JSON.toString(deresp);		
-	}*/
 	@RequestMapping("/queryTaskRecord")
 	@ResponseBody
 	public String queryTaskRecord(@RequestBody String param) {
