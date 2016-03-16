@@ -1,8 +1,5 @@
 package com.aic.paas.task.mvc.dev;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
 import com.aic.paas.task.mvc.dev.bean.PcBuildTaskResponse;
 import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
+import com.aic.paas.task.util.http.HttpClientUtil;
 import com.binary.core.util.BinaryUtils;
-import com.binary.framework.util.ControllerUtils;
 import com.binary.json.JSON;
 import com.binary.json.JSONObject;
 
@@ -80,7 +77,7 @@ public class PcBuildTaskMvc {
 	@RequestMapping(value="updateBuildTaskByCallBack")
 	@ResponseBody
 	public String updateBuildTaskByCallBack(@RequestBody String param)throws Exception{
-		
+		System.out.println("param =========================="+param);
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
 		String result ="";
@@ -92,4 +89,11 @@ public class PcBuildTaskMvc {
 		
 		return result;
 	}
+	
+	
+	
+	
+	
+	
+	
 }

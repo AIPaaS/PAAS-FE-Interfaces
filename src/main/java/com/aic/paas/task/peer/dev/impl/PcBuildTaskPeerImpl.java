@@ -85,7 +85,7 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		String[] namespaces = namespace.split("_____");
 		String mntCode = "";
 		if(namespaces.length==2){
-			mntCode = namespaces[1];
+			mntCode = namespaces[0];
 		}
 		List<WsMerchent> list = new ArrayList<WsMerchent>();
 		CWsMerchent cdt = new  CWsMerchent();
