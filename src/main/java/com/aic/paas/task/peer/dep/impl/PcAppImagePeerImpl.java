@@ -667,7 +667,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 		generalTimerReq.setContainer(container);
 
-		String resStr = iDeployServiceManager.startTimer(JSON.toString(generalTimerReq));
+		String resStr = iDeployServiceManager.statusTimer(JSON.toString(generalTimerReq));
 		return resStr;
 	}
 
