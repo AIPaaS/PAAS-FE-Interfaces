@@ -83,8 +83,12 @@ public class PcBuildTaskMvc {
 		
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
-		
-		String result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
+		String result ="";
+		try {
+			result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
+		} catch (Exception e) {
+			result = "error";
+		}
 		
 		return result;
 	}
