@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
 import com.aic.paas.task.mvc.dev.bean.PcBuildTaskResponse;
 import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
-import com.aic.paas.task.util.http.HttpClientUtil;
 import com.binary.core.util.BinaryUtils;
 import com.binary.json.JSON;
 import com.binary.json.JSONObject;
@@ -80,6 +79,8 @@ public class PcBuildTaskMvc {
 		System.out.println("param =========================="+param);
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
+		String repo_nameTmp=pbtc.getRepo_name();
+		pbtc.setRepo_name(repo_nameTmp);
 		String result ="";
 		try {
 			result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
