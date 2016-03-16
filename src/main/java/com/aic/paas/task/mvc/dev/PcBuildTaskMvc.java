@@ -77,7 +77,7 @@ public class PcBuildTaskMvc {
 		
 		
 	}
-	@RequestMapping("/updateBuildTaskByCallBack")
+	@RequestMapping(value="updateBuildTaskByCallBack")
 	@ResponseBody
 	public String updateBuildTaskByCallBack(@RequestBody String param)throws Exception{
 		
