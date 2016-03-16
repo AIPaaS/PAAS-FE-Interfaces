@@ -294,7 +294,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerName());
+			container.setContainerName(setting.getAppImage().getContainerFullName());
 			containers.add(container);
 		}
 		generalReq.setContainers(containers);
