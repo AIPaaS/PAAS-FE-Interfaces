@@ -1,5 +1,7 @@
 package com.aic.paas.task.peer.dev;
 
+import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
+
 
 public interface PcBuildTaskPeer {
 	/**
@@ -19,4 +21,12 @@ public interface PcBuildTaskPeer {
 	 * @return
 	 */
 	public String queryTaskRecord(String namespace, String repo_name, String build_id) throws Exception;
+
+	/**
+	 * 不分页查询
+	 * @param pbtc : 构建任务回调对象
+	 * @param imgRespId : 所属镜像库Id
+	 * @return 
+	 */
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc);
 }

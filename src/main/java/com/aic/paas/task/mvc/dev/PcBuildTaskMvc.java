@@ -1,5 +1,8 @@
 package com.aic.paas.task.mvc.dev;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
 import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.util.ControllerUtils;
 import com.binary.json.JSONObject;
 
 @Controller
@@ -52,6 +58,24 @@ public class PcBuildTaskMvc {
 		return buildTaskPeer.queryTaskRecord(namespace, repo_name, build_id);
 
 
+	}
+	@RequestMapping("/updateBuildTaskByCallBack")
+	public void updateBuildTaskByCallBack(HttpServletRequest request,HttpServletResponse response, 
+		String namespace,String repo_name,String tag,String build_id,String duration,String time,String status){
+		
+		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
+		pbtc.setNamespace(namespace);
+		pbtc.setRepo_name(repo_name);
+		pbtc.setTag(tag);
+		pbtc.setBuild_id(build_id);
+		pbtc.setDuration(duration);
+		pbtc.setTime(time);
+		pbtc.setStatus(status);//success,  error
+				
+		
+		String result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
+		
+		ControllerUtils.returnJson(request, response, result);
 	}
 
 }
