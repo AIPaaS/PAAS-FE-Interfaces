@@ -61,24 +61,6 @@ public class PcBuildTaskMvc {
 
 
 	}
-	@RequestMapping("/updateBuildTaskByCallBack")
-	public void updateBuildTaskByCallBack(HttpServletRequest request,HttpServletResponse response, 
-		String namespace,String repo_name,String tag,String build_id,String duration,String time,String status){
-		
-		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
-		pbtc.setNamespace(namespace);
-		pbtc.setRepo_name(repo_name);
-		pbtc.setTag(tag);
-		pbtc.setBuild_id(build_id);
-		pbtc.setDuration(duration);
-		pbtc.setTime(time);
-		pbtc.setStatus(status);//success,  error
-				
-		
-		String result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
-		
-		ControllerUtils.returnJson(request, response, result);
-	}
 	@RequestMapping(value="saveBuildTask")
 	@ResponseBody
 	public String saveBuildTask(@RequestBody String param) {		
@@ -95,9 +77,9 @@ public class PcBuildTaskMvc {
 		
 		
 	}
-	@RequestMapping("/updateBuildTaskByCallBackk")
+	@RequestMapping("/updateBuildTaskByCallBack")
 	@ResponseBody
-	public String updateBuildTaskByCallBackk(@RequestBody String param)throws Exception{
+	public String updateBuildTaskByCallBack(@RequestBody String param)throws Exception{
 		
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
