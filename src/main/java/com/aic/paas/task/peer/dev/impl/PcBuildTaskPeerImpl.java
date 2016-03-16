@@ -81,10 +81,15 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 
 	@Override
 	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc){
-		
+		String namespace = pbtc.getNamespace();
+		String[] namespaces = namespace.split("_____");
+		String mntCode = "";
+		if(namespaces.length==2){
+			mntCode = namespaces[1];
+		}
 		List<WsMerchent> list = new ArrayList<WsMerchent>();
 		CWsMerchent cdt = new  CWsMerchent();
-		cdt.setMntCodeEqual(pbtc.getNamespace());
+		cdt.setMntCodeEqual(mntCode);
 		cdt.setStatus(1);//0=待审核  1=审核通过  2=审核退回
 		cdt.setDataStatus(1);//数据状态：1-正常 0-删除
 		list = merchentSvc.queryList(cdt, null);
