@@ -29,4 +29,11 @@ public interface PcBuildTaskPeer {
 	 * @return 
 	 */
 	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc);
+	/**
+	 * 保存构建任务
+	 * @param param : 传递的参数
+	 * @param 
+	 * @return 
+	 */
+	public String saveBuildTask(String param);
 }

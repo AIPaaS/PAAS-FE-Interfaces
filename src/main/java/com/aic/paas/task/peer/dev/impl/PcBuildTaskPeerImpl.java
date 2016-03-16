@@ -2,6 +2,7 @@ package com.aic.paas.task.peer.dev.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,12 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		}
 		
 		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
+	}
+
+	@Override
+	public String saveBuildTask(String param) {
+		String result = HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/builds", param);
+		return result;
 	}
 
 }

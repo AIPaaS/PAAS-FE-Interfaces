@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
+import com.aic.paas.task.mvc.dev.bean.PcBuildTaskResponse;
 import com.aic.paas.task.peer.dev.PcBuildTaskPeer;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.util.ControllerUtils;
+import com.binary.json.JSON;
 import com.binary.json.JSONObject;
 
 @Controller
@@ -77,5 +79,20 @@ public class PcBuildTaskMvc {
 		
 		ControllerUtils.returnJson(request, response, result);
 	}
+	@RequestMapping(value="saveBuildTask")
+	@ResponseBody
+	public String saveBuildTask(@RequestBody String param) {		
+		
+		System.out.println("--------------------------------------------");
+		System.out.println(param);
+		String result = buildTaskPeer.saveBuildTask(param);
+		
+		//业务逻辑处理		
+		PcBuildTaskResponse pbtr = new PcBuildTaskResponse();
+		pbtr = JSON.toObject(result, PcBuildTaskResponse.class);
 
+		return JSON.toString(pbtr);		
+		
+		
+	}
 }
