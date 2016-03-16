@@ -95,4 +95,15 @@ public class PcBuildTaskMvc {
 		
 		
 	}
+	@RequestMapping("/updateBuildTaskByCallBackk")
+	@ResponseBody
+	public String updateBuildTaskByCallBackk(@RequestBody String param)throws Exception{
+		
+		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
+		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
+		
+		String result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
+		
+		return result;
+	}
 }
