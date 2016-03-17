@@ -79,7 +79,7 @@ public class PcBuildTaskMvc {
 		System.out.println("param =========================="+param);
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
-		String repo_nameTmp=pbtc.getRepo_name();
+		String repo_nameTmp="/"+pbtc.getRepo_name();
 		pbtc.setRepo_name(repo_nameTmp);
 		String result ="";
 		try {
