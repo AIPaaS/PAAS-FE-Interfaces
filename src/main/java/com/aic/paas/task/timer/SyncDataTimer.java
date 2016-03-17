@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.aic.paas.task.msg.Message;
-import com.aic.paas.task.msg.MessageFactory;
-import com.aic.paas.task.msg.MsgType;
+import com.aic.paas.task.msg.send.msg.Message;
+import com.aic.paas.task.msg.send.msg.MessageFactory;
+import com.aic.paas.task.msg.send.msg.MsgType;
 import com.binary.core.exception.MultipleException;
 import com.binary.framework.Local;
 import com.binary.framework.bean.Condition;

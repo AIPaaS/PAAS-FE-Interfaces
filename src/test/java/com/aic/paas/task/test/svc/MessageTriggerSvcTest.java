@@ -3,8 +3,8 @@ package com.aic.paas.task.test.svc;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.aic.paas.task.msg.MsgType;
-import com.aic.paas.task.svc.msmq.MessageTriggerSvc;
+import com.aic.paas.task.msg.send.msg.MsgType;
+import com.aic.paas.task.msg.svc.MessageTriggerSvc;
 import com.binary.framework.test.TestTemplate;
 
 public class MessageTriggerSvcTest extends TestTemplate {

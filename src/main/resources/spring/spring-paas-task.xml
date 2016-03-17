@@ -15,50 +15,16 @@
     <context:component-scan base-package="com.aic.paas.task.**" />
     
     
-    <bean class="com.aic.paas.task.msg.MessageFactory" />
-    <bean class="com.aic.paas.task.send.impl.NsqHttpMessageSender" >
-    	<property name="nsqRoot" value="${project.msmq.nsq.root}" />
-    </bean>
-    <bean abstract="true" id="message.parent" >
-    	<property name="pageSize" value="${project.sync.batch.size}" />
-		<property name="messageSender" ref="com.aic.paas.task.send.impl.NsqHttpMessageSender" />
-	</bean>
+    <import resource="classpath:spring/spring-paas-task-msg.xml" />
     
     
-    <!-- msg - sys -->
-    <bean class="com.aic.paas.task.msg.support.sys.SysOpMsg" parent="message.parent" />
-    
-    <!-- msg - dep -->
-    <bean class="com.aic.paas.task.msg.support.dep.PcAppDepInstanceMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcAppImageMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcAppMgrMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcAppMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcDataCenterMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcNetZoneMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.msg.support.dep.PcResCenterMsg" parent="message.parent" />
+    <import resource="classpath:spring/spring-paas-task-sys.xml" />
+    <import resource="classpath:spring/spring-paas-task-dev.xml" />
+    <import resource="classpath:spring/spring-paas-task-dep.xml" />
     
     
     
     
-    
-    <!-- svc -->
-    <bean class="com.aic.paas.task.svc.msmq.impl.MessageTriggerSvcImpl" >
-    	<property name="threadPool" ref="MessageTrigger_ThreadPool" />
-    </bean>
-    
-    <bean class="com.aic.paas.task.peer.dep.impl.PcAppImagePeerImpl"></bean>
-    
-    
-    <!-- dev -->
-    <bean class="com.aic.paas.task.peer.dev.impl.PcBuildPeerImpl" >
-    	 <property name="buildManagementUrl" value="${buildManagement.api.url}" />
-    </bean>
-    <bean class="com.aic.paas.task.peer.dev.impl.PcBuildTaskPeerImpl" >
-    	 <property name="buildManagementUrl" value="${buildManagement.api.url}" />
-    </bean>
-    <bean class="com.aic.paas.task.peer.dev.impl.PcBuildDefPeerImpl" >
-    	 <property name="buildManagementUrl" value="${buildManagement.api.url}" />
-    </bean>
         
     
 </beans>

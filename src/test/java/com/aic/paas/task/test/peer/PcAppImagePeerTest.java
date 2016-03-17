@@ -3,7 +3,7 @@ package com.aic.paas.task.test.peer;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.aic.paas.task.peer.dep.PcAppImagePeer;
+import com.aic.paas.task.dep.peer.PcAppImagePeer;
 import com.binary.framework.test.TestTemplate;
 
 public class PcAppImagePeerTest extends TestTemplate{

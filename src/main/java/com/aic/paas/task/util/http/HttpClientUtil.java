@@ -17,7 +17,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import com.aic.paas.task.mvc.dev.bean.base.BaseRequest;
+import com.aic.paas.task.dev.bean.base.BaseRequest;
 import com.binary.json.JSON;
 
 public class HttpClientUtil {

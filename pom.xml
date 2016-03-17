@@ -16,15 +16,13 @@
 		    <artifactId>commons-beanutils</artifactId>
 		    <version>1.9.2</version>
 		</dependency>
-	</dependencies>
-	
-	<dependencies>
 		<dependency>
 			<groupId>org.walkmod</groupId>
 			<artifactId>nsq-java</artifactId>
 			<version>1.1</version>
 		</dependency>
 	</dependencies>
+	
 	
 	
 	<build>

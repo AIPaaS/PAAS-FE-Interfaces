@@ -1,8 +1,8 @@
 package com.aic.paas.task.test.svc;
 
-import com.aic.paas.task.mvc.dev.bean.PcBuildTaskCallBack;
-import com.aic.paas.task.mvc.dev.bean.PcBuildTaskRequest;
-import com.aic.paas.task.mvc.dev.bean.PcBuildTaskResponse;
+import com.aic.paas.task.dev.bean.PcBuildTaskCallBack;
+import com.aic.paas.task.dev.bean.PcBuildTaskRequest;
+import com.aic.paas.task.dev.bean.PcBuildTaskResponse;
 import com.aic.paas.task.util.http.HttpClientUtil;
 import com.binary.json.JSON;
 
