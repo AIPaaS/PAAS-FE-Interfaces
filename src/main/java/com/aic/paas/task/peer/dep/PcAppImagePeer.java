@@ -73,4 +73,41 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 */
 	public String appStatus(Long appId);
+	
+	/**
+	 * 开始部署定时应用
+	 * 
+	 * @param appId
+	 * @param appVnoId
+	 */
+	public String startTimerDeploy(Long appId, Long appVnoId);
+
+	/**
+	 * 重新部署定时
+	 * 
+	 * @param appId
+	 * @param appVnoId
+	 */
+	public String reDeployTimer(Long appId, Long appVnoId);
+
+	/**
+	 * 停止部署定时
+	 * 
+	 * @param appId
+	 */
+	public String destroyDeployTimer(Long appId);
+
+	/**
+	 * 开始运行定时应用
+	 * 
+	 * @param appId
+	 */
+	public String starTimertApp(Long appId);
+
+	/**
+	 * 获取定时应用状态信息
+	 * 
+	 * @param appId
+	 */
+	public String appTimerStatus(Long appId);
 }

@@ -1,4 +1,4 @@
-package com.aic.paas.task.bean.dep;
+package com.aic.paas.task.peer.dep.bean;
 
 import java.util.List;
 

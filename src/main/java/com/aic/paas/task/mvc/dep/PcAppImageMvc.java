@@ -29,8 +29,8 @@ public class PcAppImageMvc {
 	 */
 	@RequestMapping("/startDeploy")
 	public void startDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
-		logger.debug("===================== appId : " + appId);
-		logger.debug("===================== appVnoId : " + appVnoId);
+		logger.debug("long run deploy===================== appId : " + appId);
+		logger.debug("long run deploy===================== appVnoId : " + appVnoId);
 		BinaryUtils.checkEmpty(appId, "appId");
 		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
 		String resp = appImagePeer.startDeploy(appId, appVnoId);
@@ -86,6 +86,62 @@ public class PcAppImageMvc {
 	public void pause(HttpServletRequest request, HttpServletResponse response, Long appId) {
 		BinaryUtils.checkEmpty(appId, "appId");
 		String resp = appImagePeer.pauseApp(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
+
+	/**
+	 * 开始定时部署
+	 * 
+	 * @param appId
+	 * @param appVnoId
+	 */
+	@RequestMapping("/timer/startDeploy")
+	public void startTimerDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+		logger.info("timer deploy===================== appId : " + appId);
+		logger.info("timer deploy===================== appVnoId : " + appVnoId);
+		BinaryUtils.checkEmpty(appId, "appId");
+		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
+		String resp = appImagePeer.startTimerDeploy(appId, appVnoId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
+
+	/**
+	 * 重新部署定时应用
+	 * 
+	 * @param appId
+	 * @param appVnoId
+	 */
+	@RequestMapping("/timer/reDeploy")
+	public void reTimerDeploy(HttpServletRequest request, HttpServletResponse response, Long appId, Long appVnoId) {
+		logger.debug("===================== appId : " + appId);
+		logger.debug("===================== appVnoId : " + appVnoId);
+		BinaryUtils.checkEmpty(appId, "appId");
+		BinaryUtils.checkEmpty(appVnoId, "appVnoId");
+		String resp = appImagePeer.reDeployTimer(appId, appVnoId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
+
+	/**
+	 * 销毁部署定时
+	 * 
+	 * @param appId
+	 */
+	@RequestMapping("/timer/stopDeploy")
+	public void stopTimerDeploy(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		BinaryUtils.checkEmpty(appId, "appId");
+		String resp = appImagePeer.destroyDeployTimer(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
+
+	/**
+	 * 开始运行定时app
+	 * 
+	 * @param appId
+	 */
+	@RequestMapping("/timer/startApp")
+	public void startTimer(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		BinaryUtils.checkEmpty(appId, "appId");
+		String resp = appImagePeer.starTimertApp(appId);
 		ControllerUtils.returnJson(request, response, resp);
 	}
 

@@ -43,4 +43,10 @@ public class PcAppLogMvc {
 		String resp = pcAppImagePeer.appStatus(appId);
 		ControllerUtils.returnJson(request, response, resp);
 	}
+	
+	@RequestMapping("/log/timer/status")
+	public void queryTimerStatus(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		String resp = pcAppImagePeer.appTimerStatus(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
 }
