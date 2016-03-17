@@ -28,7 +28,7 @@ public class MessageTriggerMvc {
 	
 	
 	/**
-	 * 指定日期触发消息
+	 * 指定ID触发消息
 	 * @param type 对应消息代码
 	 * @param date 格式：yyyyMMdd
 	 */
