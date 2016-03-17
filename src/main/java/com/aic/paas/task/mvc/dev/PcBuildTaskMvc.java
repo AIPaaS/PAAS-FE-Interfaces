@@ -75,7 +75,7 @@ public class PcBuildTaskMvc {
 	}
 	@RequestMapping(value="updateBuildTaskByCallBack")
 	@ResponseBody
-	public String updateBuildTaskByCallBack(@RequestBody String param)throws Exception{
+	public String updateBuildTaskByCallBack(@RequestBody String param){
 		System.out.println("param =========================="+param);
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
