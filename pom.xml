@@ -10,6 +10,13 @@
 	<artifactId>paas-task</artifactId>
 	<packaging>war</packaging>
 	
+	<dependencies>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+	</dependencies>
 	
 	<dependencies>
 		<dependency>
@@ -22,6 +29,14 @@
 	
 	<build>
 	  	<plugins>
+	  		<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
 	  		<plugin>  
                 <groupId>org.apache.maven.plugins</groupId>  
                 <artifactId>maven-jar-plugin</artifactId>  
