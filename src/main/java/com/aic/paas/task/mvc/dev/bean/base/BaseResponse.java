@@ -4,7 +4,7 @@ public class BaseResponse {
 	
 	private String namespace;
 	private String repo_name;
-
+	private String mnt_id;
 	
 	public String getNamespace() {
 		return namespace;
@@ -17,6 +17,12 @@ public class BaseResponse {
 	}
 	public void setRepo_name(String repo_name) {
 		this.repo_name = repo_name;
+	}
+	public String getMnt_id() {
+		return mnt_id;
+	}
+	public void setMnt_id(String mnt_id) {
+		this.mnt_id = mnt_id;
 	}
 	
 }
