@@ -16,7 +16,7 @@ public class PcBuildTaskMvcTest {
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		
 		pbtc.setNamespace("aaa_____renfeng3");
-		pbtc.setRepo_name("/paas_web/paas_task/ddddd");
+		pbtc.setRepo_name("paas_web/paas_task/qqqqq");
 		pbtc.setBuild_id("1");
 		pbtc.setDuration("8");
 		pbtc.setTag("1.1.1");
@@ -24,8 +24,10 @@ public class PcBuildTaskMvcTest {
 		pbtc.setStatus("success");
 		String param1 = JSON.toString(pbtc);
 		System.out.println(param1);
-		//String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/buildTaskMvc/updateBuildTaskByCallBack", param1);
-		String sendPostRequest = HttpClientUtil.sendPostRequest("http://10.1.245.100:16009/paas-task/dev/buildTaskMvc/updateBuildTaskByCallBack", param1);
+		
+		String param11="{\"duration\":\"8\",\"time\":\"2016-3-12 09:53:07.792\",\"repo_name\":\"paas_dubbo/paas_dubbo2/ooooo\",\"status\":\"success\",\"tag\":\"1.1.1\",\"build_id\":\"1\",\"namespace\":\"aaa_____renfeng3\"}";
+		String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/buildTaskMvc/updateBuildTaskByCallBack", param11);
+		//String sendPostRequest = HttpClientUtil.sendPostRequest("http://10.1.245.100:16009/paas-task/dev/buildTaskMvc/updateBuildTaskByCallBack", json);
 		
 		System.out.println("------------------"+sendPostRequest);
 		
