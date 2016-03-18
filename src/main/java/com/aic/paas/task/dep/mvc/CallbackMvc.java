@@ -22,6 +22,8 @@ import com.aic.paas.task.dep.bean.PcApp;
 import com.aic.paas.task.dep.bean.PcAppDepHistory;
 import com.aic.paas.task.dep.bean.PcAppDepInstance;
 import com.aic.paas.task.dep.bean.PcAppTask;
+import com.aic.paas.task.dep.peer.PcAppImagePeer;
+import com.aic.paas.task.dep.rest.IDeployServiceManager;
 import com.aic.paas.task.dep.rest.PcAppDepHistorySvc;
 import com.aic.paas.task.dep.rest.PcAppDepInstanceSvc;
 import com.aic.paas.task.dep.rest.PcAppSvc;
@@ -43,10 +45,14 @@ public class CallbackMvc {
 
 	@Autowired
 	PcAppVersionSvc pcAppVersionSvc;
-
+	
+	@Autowired
+	PcAppImagePeer appImagePeer;
+	
 	@Autowired
 	PcAppDepHistorySvc pcAppDepHistorySvc;
-
+	@Autowired
+	IDeployServiceManager iDeployServiceManager;
 	@Autowired
 	PcAppDepInstanceSvc pcAppDepInstanceSvc;
 
@@ -54,10 +60,10 @@ public class CallbackMvc {
 	public void callDeployServiceFinished(HttpServletRequest request, HttpServletResponse response, @RequestBody String param) {
 		logger.info("receive callback request , param is " + param);
 		CallBackReq callBackReq = JSON.toObject(param, CallBackReq.class);
-
+		
 		if (ActionType.deploy.getName().equals(callBackReq.getActionType())) {
 			afterStart(callBackReq, 3);
-		} else if (ActionType.destroy.getName().equals(callBackReq.getActionType())) {
+		} else if (ActionType. destroy.getName().equals(callBackReq.getActionType())) {
 			afterStart(callBackReq, 1);
 		} else if (ActionType.start.getName().equals(callBackReq.getActionType())) {
 			afterStart(callBackReq, 3);
@@ -67,15 +73,17 @@ public class CallbackMvc {
 			afterStart(callBackReq, 3);
 		}
 		ControllerUtils.returnJson(request, response, true);
+		
 	}
 
 	private void afterStart(CallBackReq callBackReq, int pcAppStatus) {
 		PcAppTask pcAppTask = pcAppTaskSvc.queryById(callBackReq.getReqId());
 		Map<String, Long> idMap = getAppDepHistoryIdoiMap(callBackReq.getReqId().longValue());
 		int state = -1;
+		Long appDepHistoryId=null;
 		for (CallBackReq.Container container : callBackReq.getContainers()) {
 			String containerName = container.getContainerName();
-			Long appDepHistoryId = idMap.get(containerName);
+			appDepHistoryId = idMap.get(containerName);
 			if (appDepHistoryId == null) {
 				logger.error("cann't find app dep history id from container " + containerName);
 				continue;
@@ -92,16 +100,21 @@ public class CallbackMvc {
 			}
 		}
 		PcApp pcApp = pcAppSvc.queryById(Long.parseLong(callBackReq.getAppId()));
+		
 		if (state == InstanceStateType.RUNNING.getKey()) {
+			appImagePeer.updateDepHistory(Long.parseLong(callBackReq.getAppId()),null , 3, 2);
 			pcApp.setStatus(pcAppStatus);
 			pcAppTask.setStatus(3);
+			
 		} else if ((state == InstanceStateType.STAGING.getKey()) || (state == InstanceStateType.FAILED.getKey())) {
 			// timeout failed
+			appImagePeer.updateDepHistory(Long.parseLong(callBackReq.getAppId()),null , 4, 3);
 			pcApp.setStatus(5);
 			pcAppTask.setStatus(4);
 		} else {
 			logger.info("no container callback , app is " + callBackReq.getAppId());
 			if (ActionType.destroy.getName().equals(callBackReq.getActionType())) {
+				appImagePeer.updateDepHistory(Long.parseLong(callBackReq.getAppId()),null , 4, 3);
 				pcApp.setStatus(1);
 			} else
 				pcApp.setStatus(4);
@@ -113,7 +126,7 @@ public class CallbackMvc {
 	}
 
 	private Map<String, Long> getAppDepHistoryIdoiMap(long taskId) {
-		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, Long> result = new HashMap<>();
 		List<PcAppDepHistory> appDepHistorys = pcAppDepHistorySvc.queryByTaskId(taskId);
 		if (CollectionUtils.isNotEmpty(appDepHistorys)) {
 			for (PcAppDepHistory pcAppDepHistory : appDepHistorys) {
@@ -123,3 +136,4 @@ public class CallbackMvc {
 		return result;
 	}
 }
+

@@ -3,6 +3,7 @@ package com.aic.paas.task.dep.peer;
 import java.util.List;
 
 import com.aic.paas.task.dep.bean.AppImageSettings;
+import com.aic.paas.task.dep.bean.GeneralDeployResp;
 
 public interface PcAppImagePeer {
 
@@ -110,4 +111,8 @@ public interface PcAppImagePeer {
 	 * @param appId
 	 */
 	public String appTimerStatus(Long appId);
+
+	void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus);
+
+	void updateDepHistory(Long appId, Long appVnoId, Integer runStatus, Integer preRunStatus);
 }

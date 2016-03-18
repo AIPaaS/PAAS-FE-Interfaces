@@ -2,6 +2,7 @@ package com.aic.paas.task.dep.rest;
 
 import java.util.List;
 
+import com.aic.paas.task.dep.bean.CPcAppDepHistory;
 import com.aic.paas.task.dep.bean.PcAppDepHistory;
 
 public interface PcAppDepHistorySvc {
@@ -18,4 +19,6 @@ public interface PcAppDepHistorySvc {
 	 * @return 任务[id]值
 	 */
 	public List<PcAppDepHistory> queryByTaskId(Long taskId);
+
+	public long update(PcAppDepHistory pcAppDepHistory, CPcAppDepHistory cdt);
 }
