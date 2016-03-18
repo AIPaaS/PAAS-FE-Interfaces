@@ -40,6 +40,11 @@ public interface PcImageSvc {
 	
 	
 	
+	/**
+	 * @param param 回调方法，返回的参数
+	 * @return success 回调成功；error回调失败
+	 */
+	public String updateImageByCallBack(String param);
 	
 
 }
