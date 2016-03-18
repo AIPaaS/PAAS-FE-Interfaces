@@ -17,7 +17,6 @@ import com.aic.paas.task.msg.send.MsgEntity;
 import com.binary.core.io.FileSystem;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
-import com.binary.framework.util.ControllerUtils;
 import com.binary.json.JSON;
 
 public class NsqHttpMessageSender extends AbstractMessageSender {

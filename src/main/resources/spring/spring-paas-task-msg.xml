@@ -14,7 +14,6 @@
           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
    
     
-    <bean class="com.aic.paas.task.msg.send.msg.MessageFactory" />
     <bean class="com.aic.paas.task.msg.send.impl.NsqHttpMessageSender" >
     	<property name="nsqHost" value="${project.msmq.nsq.host}" />
     	<property name="nsqPort" value="${project.msmq.nsq.port}" />
@@ -32,6 +31,26 @@
     </bean>
     
     
+    <bean class="com.aic.paas.task.msg.send.msg.MessageFactory" >
+    	<property name="messages" >
+    		<array>
+    			<!-- sys -->
+    			<ref bean="com.aic.paas.task.sys.msg.SysOpMsg" />
+    			
+    			<!-- dep -->
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcAppDepInstanceMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcAppImageMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcAppMgrMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcAppMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcDataCenterMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcNetZoneMsg" />
+    			<ref bean="com.aic.paas.task.dep.msg.send.PcResCenterMsg" />
+    		</array>
+    	</property>
+    </bean>
+    
+    
+    
     
     
     <!-- receive -->
@@ -40,6 +59,7 @@
     	<property name="nsqPort" value="${project.msmq.nsq.port}" />
     	<property name="receiveHandlers" >
     		<array>
+    			<!-- dep -->
     			<ref bean="com.aic.paas.task.dep.msg.receive.AppDepInstanceReceive" />
     		</array>
     	</property>
