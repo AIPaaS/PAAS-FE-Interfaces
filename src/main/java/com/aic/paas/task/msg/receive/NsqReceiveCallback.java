@@ -22,6 +22,7 @@ public class NsqReceiveCallback implements NSQMessageCallback {
 	
 	public NsqReceiveCallback(NsqReceiveHandler handler, String charset) {
 		BinaryUtils.checkEmpty(handler, "handler");
+		this.handler = handler;
 		this.charset = charset;
 		if(BinaryUtils.isEmpty(this.charset)) {
 			this.charset = "UTF-8";

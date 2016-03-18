@@ -16,7 +16,7 @@
     
     <bean class="com.aic.paas.task.msg.send.impl.NsqHttpMessageSender" >
     	<property name="nsqHost" value="${project.msmq.nsq.host}" />
-    	<property name="nsqPort" value="${project.msmq.nsq.port}" />
+    	<property name="nsqPort" value="${project.msmq.nsq.send.port}" />
     </bean>
     <bean abstract="true" id="message.parent" >
     	<property name="pageSize" value="${project.sync.batch.size}" />
@@ -56,7 +56,7 @@
     <!-- receive -->
     <bean class="com.aic.paas.task.msg.receive.NsqReceiveManager" >
     	<property name="nsqHost" value="${project.msmq.nsq.host}" />
-    	<property name="nsqPort" value="${project.msmq.nsq.port}" />
+    	<property name="nsqPort" value="${project.msmq.nsq.receive.port}" />
     	<property name="receiveHandlers" >
     		<array>
     			<!-- dep -->
