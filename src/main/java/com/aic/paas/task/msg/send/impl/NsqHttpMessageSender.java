@@ -27,24 +27,35 @@ public class NsqHttpMessageSender extends AbstractMessageSender {
 	private String nsqRoot;
 	
 	
+	private String nsqHost;
+	private Integer nsqPort;
+	
 	
 	public String getNsqRoot() {
 		if(BinaryUtils.isEmpty(this.nsqRoot)) {
-			throw new ServiceException(" not set property 'nsqRoot'! ");
+			if(BinaryUtils.isEmpty(this.nsqHost)) throw new ServiceException(" not set property 'nsqHost'! ");
+			if(BinaryUtils.isEmpty(this.nsqPort)) throw new ServiceException(" not set property 'nsqPort'! ");
+			this.nsqRoot = "http://"+this.nsqHost+":"+this.nsqPort;
 		}
 		return nsqRoot;
 	}
+	
 
-	public void setNsqRoot(String nsqRoot) {
-		BinaryUtils.checkEmpty(nsqRoot, "nsqRoot");
-		this.nsqRoot = ControllerUtils.formatContextPath(nsqRoot).substring(1);
+	public String getNsqHost() {
+		return nsqHost;
 	}
-
-
-
-
-
-
+	public void setNsqHost(String nsqHost) {
+		this.nsqHost = nsqHost;
+	}
+	public Integer getNsqPort() {
+		return nsqPort;
+	}
+	public void setNsqPort(Integer nsqPort) {
+		this.nsqPort = nsqPort;
+	}
+	
+	
+	
 
 
 	@Override

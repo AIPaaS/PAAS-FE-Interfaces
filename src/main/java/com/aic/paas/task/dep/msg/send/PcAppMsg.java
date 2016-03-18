@@ -1,4 +1,4 @@
-package com.aic.paas.task.dep.msg;
+package com.aic.paas.task.dep.msg.send;
 
 import java.util.ArrayList;
 import java.util.HashSet;

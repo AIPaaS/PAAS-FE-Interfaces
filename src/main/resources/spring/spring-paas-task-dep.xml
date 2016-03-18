@@ -14,19 +14,30 @@
           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
         
     
-    <!-- msg - dep -->
-    <bean class="com.aic.paas.task.dep.msg.PcAppDepInstanceMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcAppImageMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcAppMgrMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcAppMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcDataCenterMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcNetZoneMsg" parent="message.parent" />
-    <bean class="com.aic.paas.task.dep.msg.PcResCenterMsg" parent="message.parent" />
+    <!-- msg - send - dep -->
+    <bean class="com.aic.paas.task.dep.msg.send.PcAppDepInstanceMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcAppImageMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcAppMgrMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcAppMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcDataCenterMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcNetZoneMsg" parent="message.parent" />
+    <bean class="com.aic.paas.task.dep.msg.send.PcResCenterMsg" parent="message.parent" />
     
     
     
+    <!-- msg - receive -->
+    <bean class="com.aic.paas.task.dep.msg.receive.AppDepInstanceReceive" >
+    	<property name="topicName" value="${project.msmq.nsq.receive.dep.depInstance.topicName}" />
+    	<property name="channelName" value="${project.msmq.nsq.receive.dep.depInstance.channelName}" />
+    </bean>
+    
+    
+
     <!-- peer -->
-    <bean class="com.aic.paas.task.dep.peer.impl.PcAppImagePeerImpl"></bean>
+    <bean class="com.aic.paas.task.dep.peer.impl.PcAppImagePeerImpl" />
+    <bean class="com.aic.paas.task.dep.peer.impl.PcAppDepInstancePeerImpl" />
             
+    
+    
     
 </beans>

@@ -16,7 +16,8 @@
     
     <bean class="com.aic.paas.task.msg.send.msg.MessageFactory" />
     <bean class="com.aic.paas.task.msg.send.impl.NsqHttpMessageSender" >
-    	<property name="nsqRoot" value="${project.msmq.nsq.root}" />
+    	<property name="nsqHost" value="${project.msmq.nsq.host}" />
+    	<property name="nsqPort" value="${project.msmq.nsq.port}" />
     </bean>
     <bean abstract="true" id="message.parent" >
     	<property name="pageSize" value="${project.sync.batch.size}" />
@@ -25,11 +26,26 @@
     
     
     
-    
     <!-- svc -->
     <bean class="com.aic.paas.task.msg.svc.impl.MessageTriggerSvcImpl" >
     	<property name="threadPool" ref="MessageTrigger_ThreadPool" />
     </bean>
+    
+    
+    
+    
+    <!-- receive -->
+    <bean class="com.aic.paas.task.msg.receive.NsqReceiveManager" >
+    	<property name="nsqHost" value="${project.msmq.nsq.host}" />
+    	<property name="nsqPort" value="${project.msmq.nsq.port}" />
+    	<property name="receiveHandlers" >
+    		<array>
+    			<ref bean="com.aic.paas.task.dep.msg.receive.AppDepInstanceReceive" />
+    		</array>
+    	</property>
+    </bean>
+    
+    
     
     
     

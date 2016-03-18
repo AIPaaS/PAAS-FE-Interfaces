@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.aic.paas.task.dep.bean.CPcAppDepInstance;
 import com.aic.paas.task.dep.bean.PcAppDepInstance;
-import com.aic.paas.task.dep.msg.PcAppDepInstanceMsg;
+import com.aic.paas.task.dep.msg.send.PcAppDepInstanceMsg;
 import com.binary.framework.test.TestTemplate;
 
 public class PcAppDepInstanceMsgTest extends TestTemplate {
