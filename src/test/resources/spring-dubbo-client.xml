@@ -43,6 +43,7 @@
 	<dubbox:rest id="DubboxRest_PcImageRepositorySvc" interface="com.aic.paas.task.dep.rest.PcImageRepositorySvc" client="DubboRestClient_DEP"/>
 	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.dep.rest.PcAppDepHistorySvc" client="DubboRestClient_DEP"/>
 	<dubbox:rest id="DubboxRest_PcServiceSvc" interface="com.aic.paas.task.dep.rest.PcServiceSvc" client="DubboRestClient_DEP"/>
+	<dubbox:rest id="DubboxRest_PcAppAccessSvc" interface="com.aic.paas.task.dep.rest.PcAppAccessSvc" client="DubboRestClient_DEP"/>
 	
 	
 	<!-- dev -->
@@ -56,7 +57,7 @@
 	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.dep.rest.IDeployServiceManager" url="${dubbox.rest.root.beam}" timeout="${dubbox.rest.client.timeout}"/>
 	<dubbo:reference id="iExternalServiceManager" interface="com.aic.paas.task.dep.rest.IExternalServiceManager" url="${dubbox.rest.root.beam}" timeout="${dubbox.rest.client.timeout}"/>
 	
-	
+	 
 </beans>
 
 
