@@ -17,7 +17,6 @@ import com.aic.paas.task.dep.rest.IAppAccessManager;
 import com.aic.paas.task.dep.rest.PcAppAccessSvc;
 import com.aic.paas.task.dep.rest.PcAppImageSvc;
 import com.aic.paas.task.dep.rest.PcResCenterSvc;
-import com.alibaba.dubbo.common.json.ParseException;
 import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
@@ -101,6 +100,8 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 	@Override
 	public String asynsaveOrUpdate(ParmDockerImage param) {
 		AppAccessModel appAccessModel = new AppAccessModel();
+		//获取后场返回值 
+		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
 		String fullName = param.getDockerImage();
 		CPcAppImage cpcAppImage = new CPcAppImage();
 		cpcAppImage.setContainerFullName(fullName);
@@ -125,9 +126,6 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 				appAccessModel.setProtocol(appAccess.getProtocol());
 //				appAccessModel.setResCenterId(appAccess.getResCenterId().toString());
 				appAccessModel.setResCenterId("dev");
-				//获取后场返回值 
-				String result = null;
-				//TODO逻辑？
 				PcAppAccess old = appAccessSvc.queryById(appAccess.getId());
 				if(appAccess.getId()==null){
 					result = appAccessManager.add(JSON.toString(appAccessModel));
@@ -148,7 +146,7 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	@Override
