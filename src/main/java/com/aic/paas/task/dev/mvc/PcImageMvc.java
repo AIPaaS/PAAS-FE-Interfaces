@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aic.paas.task.dev.peer.PcImagePeer;
-import com.binary.json.JSON;
 
 @Controller
 @RequestMapping("/dev/imageMvc")
