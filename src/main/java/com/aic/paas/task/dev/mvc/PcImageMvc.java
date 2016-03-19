@@ -26,7 +26,7 @@ public class PcImageMvc {
 		
 		System.out.println(param);
 		String uploadResult = imagePeer.uploadImage(param);
-		return JSON.toString(uploadResult);		
+		return uploadResult;		
 		
 		
 	}
