@@ -36,6 +36,7 @@
     <!-- peer -->
     <bean class="com.aic.paas.task.dep.peer.impl.PcAppImagePeerImpl" />
     <bean class="com.aic.paas.task.dep.peer.impl.PcAppDepInstancePeerImpl" />
+    <bean class="com.aic.paas.task.dep.peer.impl.PcServicePeerImpl" />
             
     
     
