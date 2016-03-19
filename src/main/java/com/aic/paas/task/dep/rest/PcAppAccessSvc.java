@@ -3,17 +3,11 @@ package com.aic.paas.task.dep.rest;
 import java.util.List;
 
 import com.aic.paas.task.dep.bean.CPcAppAccess;
-import com.aic.paas.task.dep.bean.ParmDockerImage;
 import com.aic.paas.task.dep.bean.PcAppAccess;
 import com.aic.paas.task.dep.bean.PcAppAccessInfo;
 import com.binary.jdbc.Page;
 
 public interface PcAppAccessSvc {
-	
-	/**
-	 * 新增方法接口：
-	 */
-	public String remoteMonitorService(ParmDockerImage pdi);
 	
 	
 	
