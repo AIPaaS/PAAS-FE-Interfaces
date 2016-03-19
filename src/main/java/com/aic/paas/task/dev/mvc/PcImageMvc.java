@@ -46,6 +46,7 @@ public class PcImageMvc {
 	
 	@RequestMapping(value="imageSyncApi")
 	public @ResponseBody String imageSyncApi(@RequestBody String param) {	
+		System.out.println("param====================="+param);
 		return imagePeer.imageSyncApi(param);
 	}
 	
