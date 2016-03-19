@@ -45,6 +45,12 @@ public interface PcImageSvc {
 	 * @return success 回调成功；error回调失败
 	 */
 	public String updateImageByCallBack(String param);
+	/**
+	 * 镜像发布回调接口
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncCallback(String param);
 	
 
 }

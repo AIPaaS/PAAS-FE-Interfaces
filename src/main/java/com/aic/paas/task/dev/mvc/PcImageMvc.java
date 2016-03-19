@@ -44,6 +44,15 @@ public class PcImageMvc {
 		return result;
 	}
 	
+	@RequestMapping(value="imageSyncApi")
+	public @ResponseBody String imageSyncApi(@RequestBody String param) {	
+		return imagePeer.imageSyncApi(param);
+	}
+	
+	@RequestMapping(value="imageSyncCallback")
+	public @ResponseBody String imageSyncCallback(@RequestBody String param) {	
+		return imagePeer.imageSyncCallback(param);
+	}
 	
 	
 	

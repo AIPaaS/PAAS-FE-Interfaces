@@ -13,4 +13,16 @@ public interface PcImagePeer {
 	 * @return success 回调成功；error回调失败
 	 */
 	public String updateImageByCallBack(String param);
+	/**
+	 * 镜像发布
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncApi(String param);
+	/**
+	 * 镜像发布回调
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncCallback(String param);
 }
