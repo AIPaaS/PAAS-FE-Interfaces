@@ -100,55 +100,54 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 
 	@Override
 	public String asynsaveOrUpdate(ParmDockerImage param) {
-//		AppAccessModel appAccessModel = new AppAccessModel();
-//		String fullName = param.getDockerImage();
-//		CPcAppImage cpcAppImage = new CPcAppImage();
-//		cpcAppImage.setContainerFullName(fullName);
-//		List<PcAppImage> list = appImageSvc.queryList(cpcAppImage, "ID desc");
-//		if(list==null || list.size() == 0 ){
-//		}else{
-//			PcAppImage appImage = list.get(0);
-//			CPcAppAccess cdt = new CPcAppAccess();
-//			cdt.setAppId(appImage.getAppId());
-//			cdt.setAppImageId(appImage.getId());
-//			List<PcAppAccess> ls = appAccessSvc.queryList(cdt, null);
-//			
-//		if(appImage!=null)
-//			appAccessModel.setContainer(appImage.getContainerFullName());
-//		appAccessModel.setAccessCode(param.getAccessCode());
-//		appAccessModel.setAccessCodeOld(param.getAccessCode());
-//		PcResCenter resCenter = resCenterDao.selectById(param.getResCenterId());
-//			if(appImage!=null&&resCenter!=null)
-//	//			param.setDns("_"+param.getContainer()+".marathon."+resCenter.getDomain());
-//				appAccessModel.setDns("_"+appAccessModel.getContainer()+"._tcp.marathon.ai");
-//			appAccessModel.setProtocol(param.getProtocol());
-//	//		param.setResCenterId(record.getResCenterId().toString());
-//			appAccessModel.setResCenterId("dev");
-//			//获取后场返回值 
-//			String result = null;
-//			if(isadd){
-//				result = iAppAccess.addAccess(appAccessModel);
-//			}else{
-//				if(old==null)
-//					old = appAccessDao.selectById(param.getId());
-//				appAccessModel.setAccessCodeOld(old.getAccessCode());
-//				result = iAppAccess.updateAccess(appAccessModel);
-//			}
-//			try {
-//				AppAccessCodeUrl aacu = JSON.parse(result, AppAccessCodeUrl.class);
-//				if("000000".equals(aacu.getCode())){
-//					PcAppAccess paa = new PcAppAccess();
-//					paa.setId(param.getId());
-//					paa.setAccessUrl(aacu.getAccessUrl());
-//					appAccessDao.save(paa);
-//				}else{
-//					throw new ServiceException(" modify remote cfg error ! "); 
-//				}
-//			} catch (ParseException e) {
-//				throw new ServiceException(" modify remote cfg error ! "); 
-//			}
-//		}
-//		
+		AppAccessModel appAccessModel = new AppAccessModel();
+		String fullName = param.getDockerImage();
+		CPcAppImage cpcAppImage = new CPcAppImage();
+		cpcAppImage.setContainerFullName(fullName);
+		List<PcAppImage> list = appImageSvc.queryList(cpcAppImage, "ID desc");
+		if(list==null || list.size() == 0 ){
+		}else{
+			PcAppImage appImage = list.get(0);
+			CPcAppAccess cdt = new CPcAppAccess();
+			cdt.setAppId(appImage.getAppId());
+			cdt.setAppImageId(appImage.getId());
+			List<PcAppAccess> ls = appAccessSvc.queryList(cdt, null);
+			if(ls!=null && ls.size()>0){
+				PcAppAccess appAccess = ls.get(0);
+				if(appImage!=null)
+					appAccessModel.setContainer(appImage.getContainerFullName());
+				appAccessModel.setAccessCode(appAccess.getAccessCode());
+				appAccessModel.setAccessCodeOld(appAccess.getAccessCode());
+				PcResCenter resCenter = resCenterSvc.queryById(appAccess.getResCenterId());
+				if(appImage!=null&&resCenter!=null)
+//					appAccessModel.setDns("_"+appAccessModel.getContainer()+".marathon."+resCenter.getDomain());
+					appAccessModel.setDns("_"+appAccessModel.getContainer()+"._tcp.marathon.ai");
+				appAccessModel.setProtocol(appAccess.getProtocol());
+//				appAccessModel.setResCenterId(appAccess.getResCenterId().toString());
+				appAccessModel.setResCenterId("dev");
+				//获取后场返回值 
+				String result = null;
+				//TODO逻辑？
+				PcAppAccess old = appAccessSvc.queryById(appAccess.getId());
+				if(appAccess.getId()==null){
+					result = appAccessManager.add(JSON.toString(appAccessModel));
+				}else{
+					if(old==null)
+						old = appAccessSvc.queryById(appAccess.getId());
+					appAccessModel.setAccessCodeOld(old.getAccessCode());
+					result = appAccessManager.modify(JSON.toString(appAccessModel));
+				}
+				AppAccessCodeUrl aacu = JSON.toObject(result, AppAccessCodeUrl.class);
+				if("000000".equals(aacu.getCode())){
+					PcAppAccess paa = new PcAppAccess();
+					paa.setId(appAccess.getId());
+					paa.setAccessUrl(aacu.getAccessUrl());
+					appAccessSvc.saveOrUpdate(paa);
+				}else{
+					throw new ServiceException(" modify remote cfg error ! "); 
+				}
+			}
+		}
 		return null;
 	}
 
