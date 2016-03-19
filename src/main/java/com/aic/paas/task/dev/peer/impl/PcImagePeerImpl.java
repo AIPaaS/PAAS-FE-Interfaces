@@ -1,5 +1,6 @@
 package com.aic.paas.task.dev.peer.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class PcImagePeerImpl implements PcImagePeer {
 	public String uploadImage(String param) {
 		String result = "";
 		try {
-			result =HttpClientUtil.sendPostRequest(buildManagementUrl+" /v1/image", param); 
+			result =HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/image", param); 
 		} catch (Exception e) {
 			logger.error("上传镜像，调用远程服务失败！");
 		}
@@ -39,8 +40,15 @@ public class PcImagePeerImpl implements PcImagePeer {
 
 	@Override
 	public String updateImageByCallBack(String param) {
-		
-		return imageSvc.updateImageByCallBack(param);
+		String result = "error";
+		if("".equals(param)){
+			logger.error("上传镜像时，回调函数中传入参数为空！");
+			return result ;
+		}
+		Map<String,String> updateMap = new HashMap<String,String>();
+		updateMap = JSON.toObject(param,Map.class);
+		result = imageSvc.updateImageByCallBack(updateMap);
+		return result;
 	}
 	@SuppressWarnings("unchecked")
 	@Override
