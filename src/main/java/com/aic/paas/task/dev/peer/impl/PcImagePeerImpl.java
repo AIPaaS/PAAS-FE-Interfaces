@@ -74,7 +74,7 @@ public class PcImagePeerImpl implements PcImagePeer {
 		}else{
 			return "error";
 		}
-		return imageSvc.imageSyncCallback(param);
+		return imageSvc.imageSyncCallback(param.trim());
 	}
 
 }
