@@ -52,6 +52,7 @@ public class PcImageMvc {
 	
 	@RequestMapping(value="imageSyncCallback")
 	public @ResponseBody String imageSyncCallback(@RequestBody String param) {	
+		System.out.println("param====================="+param);
 		return imagePeer.imageSyncCallback(param);
 	}
 	
