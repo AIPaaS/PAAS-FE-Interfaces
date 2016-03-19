@@ -1,5 +1,7 @@
 package com.aic.paas.task.msg.receive;
 
+import java.net.URLDecoder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,8 @@ public class NsqReceiveCallback implements NSQMessageCallback {
 					throw new ServiceException(" ["+handlerName+"] received message is empty! ");
 				}
 				
-				String s = new String(bs, this.charset);
+//				String s = new String(bs, this.charset);
+				String s = URLDecoder.decode(new String(bs), this.charset);
 				logger.info(" ["+handlerName+"] received message: "+s);
 				this.handler.receive(s);
 				msg.finished();

@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.task.dep.bean.ParmDockerImage;
 import com.aic.paas.task.dep.bean.PcAppDepInstance;
+import com.aic.paas.task.dep.peer.PcAppAccessPeer;
 import com.aic.paas.task.dep.peer.PcAppDepInstancePeer;
-import com.aic.paas.task.dep.rest.PcAppAccessSvc;
 import com.aic.paas.task.msg.receive.NsqReceiveHandler;
 import com.binary.core.util.BinaryUtils;
 import com.binary.json.JSON;
@@ -25,7 +25,7 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 	PcAppDepInstancePeer depInstancePeer;
 
 	@Autowired
-	PcAppAccessSvc pcAppAccessSvc;
+	PcAppAccessPeer pcAppAccessPeer;
 
 	private String topicName;
 	private String channelName;
@@ -60,14 +60,14 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 		if (!checkParam(dockerIntstance)) return;
 
 		// 1
-//		processDepInstance(dockerIntstance);
+		processDepInstance(dockerIntstance);
 
 		// 2
 		processPcAppAccess(dockerIntstance);
 	}
 
 	private void processPcAppAccess(ParmDockerImage dockerIntstance) {
-		pcAppAccessSvc.remoteMonitorService(dockerIntstance);
+		pcAppAccessPeer.asynChange(dockerIntstance);
 	}
 
 	private void processDepInstance(ParmDockerImage dockerIntstance) {
@@ -79,7 +79,7 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 				PcAppDepInstance record = new PcAppDepInstance();
 				record.setServerIp(dockerIntstance.getHost());
 				record.setInstanceName(dockerIntstance.getDockerName());
-				Date time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,sss").parse(dockerIntstance.getTimestamp());
+				Date time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss").parse(dockerIntstance.getTimestamp());
 				record.setTime(time.getTime());
 				depInstancePeer.addDepInstanceByAppImgFullName(dockerIntstance.getDockerImage(), record);
 			} catch (ParseException e) {

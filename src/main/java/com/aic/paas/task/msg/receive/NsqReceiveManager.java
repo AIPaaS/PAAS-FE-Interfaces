@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.exception.ServiceException;
+import com.github.brainlag.nsq.NSQConsumer;
+import com.github.brainlag.nsq.lookup.DefaultNSQLookup;
+import com.github.brainlag.nsq.lookup.NSQLookup;
 
 public class NsqReceiveManager implements InitializingBean {
 	private static final Logger logger = LoggerFactory.getLogger(NsqReceiveManager.class);
@@ -78,31 +82,31 @@ public class NsqReceiveManager implements InitializingBean {
 	
 	
 	private void runEntity() {
-//		try {
-//			logger.info(" NsqReceiveManager  is initializing ... ");
-//			if(BinaryUtils.isEmpty(this.nsqHost)) {
-//				throw new ServiceException(" not set property 'nsqHost'! ");
-//			}
-//			if(BinaryUtils.isEmpty(this.nsqPort)) {
-//				throw new ServiceException(" not set property 'nsqPort'! ");
-//			}
-//			if(BinaryUtils.isEmpty(this.receiveHandlers)) {
-//				throw new ServiceException(" not set property 'receiveHandlers'! ");
-//			}
-//			
-//			NSQLookup lookup = new DefaultNSQLookup();
-//			lookup.addLookupAddress(this.nsqHost, this.nsqPort);
-//			
-//			for(int i=0; i<this.receiveHandlers.length; i++) {
-//				NsqReceiveHandler handler = this.receiveHandlers[i];
-//				NsqReceiveCallback cb = new NsqReceiveCallback(handler, this.charset);
-//				receiveCallbacks.add(cb);
-//				NSQConsumer consumer = new NSQConsumer(lookup, handler.getTopicName(), handler.getChannelName(), cb);
-//				consumer.start();
-//			}
-//		}catch(Throwable t) {
-//			logger.error(" initialization NsqReceiveManager error! ", t);
-//		}
+		try {
+			logger.info(" NsqReceiveManager  is initializing ... ");
+			if(BinaryUtils.isEmpty(this.nsqHost)) {
+				throw new ServiceException(" not set property 'nsqHost'! ");
+			}
+			if(BinaryUtils.isEmpty(this.nsqPort)) {
+				throw new ServiceException(" not set property 'nsqPort'! ");
+			}
+			if(BinaryUtils.isEmpty(this.receiveHandlers)) {
+				throw new ServiceException(" not set property 'receiveHandlers'! ");
+			}
+			
+			NSQLookup lookup = new DefaultNSQLookup();
+			lookup.addLookupAddress(this.nsqHost, this.nsqPort);
+			
+			for(int i=0; i<this.receiveHandlers.length; i++) {
+				NsqReceiveHandler handler = this.receiveHandlers[i];
+				NsqReceiveCallback cb = new NsqReceiveCallback(handler, this.charset);
+				receiveCallbacks.add(cb);
+				NSQConsumer consumer = new NSQConsumer(lookup, handler.getTopicName(), handler.getChannelName(), cb);
+				consumer.start();
+			}
+		}catch(Throwable t) {
+			logger.error(" initialization NsqReceiveManager error! ", t);
+		}
 	}
 
 
