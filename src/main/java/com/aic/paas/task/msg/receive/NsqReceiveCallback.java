@@ -52,6 +52,7 @@ public class NsqReceiveCallback implements NSQMessageCallback {
 				String s = new String(bs, this.charset);
 				logger.info(" ["+handlerName+"] received message: "+s);
 				this.handler.receive(s);
+				msg.finished();
 				Local.commit();
 			}catch(Throwable t) {
 				Local.rollback();

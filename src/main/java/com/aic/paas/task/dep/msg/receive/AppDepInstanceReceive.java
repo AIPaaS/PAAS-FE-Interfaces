@@ -52,13 +52,15 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 
 		ParmDockerImage dockerIntstance = JSON.toObject(msg, ParmDockerImage.class);
 
+		logger.info(" ParmDockerImage :" + dockerIntstance);
+		
 		if (dockerIntstance == null) return;
 
 		// 校验必填字段
 		if (!checkParam(dockerIntstance)) return;
 
 		// 1
-		processDepInstance(dockerIntstance);
+//		processDepInstance(dockerIntstance);
 
 		// 2
 		processPcAppAccess(dockerIntstance);
