@@ -2,6 +2,8 @@ package com.aic.paas.task.dep.peer.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.task.dep.bean.AppAccessCodeUrl;
@@ -21,29 +23,37 @@ import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
 public class PcAppAccessPeerImpl implements PcAppAccessPeer {
+	static final Logger logger = LoggerFactory.getLogger(PcAppAccessPeerImpl.class);
+
 	@Autowired
-	PcAppAccessSvc appAccessSvc;
+	PcAppAccessSvc pcAppAccessSvc;
 	
 	@Autowired
 	IAppAccessManager appAccessManager;
 	
 	@Autowired
-	PcAppImageSvc appImageSvc;
+	PcAppImageSvc pcAppImageSvc;
 	
 	@Autowired
-	PcResCenterSvc resCenterSvc;
+	PcResCenterSvc pcResCenterSvc;
 	
 	@Override
 	public String saveOrUpdate(String record) {
+		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
+
 		PcAppAccess service = JSON.toObject(record, PcAppAccess.class);
+		//判断是否变化
+		boolean change = checkChange(service);
+		if(!change)
+			return result;
 		
 		AppAccessModel param = new AppAccessModel();
-		PcAppImage pai = appImageSvc.queryById(service.getAppImageId());
+		PcAppImage pai = pcAppImageSvc.queryById(service.getAppImageId());
 		if(pai!=null)
 			param.setContainer(pai.getContainerFullName());
 		param.setAccessCode(service.getAccessCode());
 		param.setAccessCodeOld(service.getAccessCode());
-		PcResCenter resCenter = resCenterSvc.queryById(service.getResCenterId());
+		PcResCenter resCenter = pcResCenterSvc.queryById(service.getResCenterId());
 		if(pai!=null&&resCenter!=null)
 //			param.setDns("_"+param.getContainer()+".marathon."+resCenter.getDomain());
 			param.setDns("_"+param.getContainer()+"._tcp.marathon.ai");
@@ -51,13 +61,12 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 //		param.setResCenterId(service.getResCenterId().toString());
 		param.setResCenterId("dev");
 		//获取后场返回值 
-		String result = null;
-		PcAppAccess old = appAccessSvc.queryById(service.getId());
+		PcAppAccess old = pcAppAccessSvc.queryById(service.getId());
 		if(service.getId()==null){
 			result = appAccessManager.add(JSON.toString(param));
 		}else{
 			if(old==null)
-				old = appAccessSvc.queryById(service.getId());
+				old = pcAppAccessSvc.queryById(service.getId());
 			param.setAccessCodeOld(old.getAccessCode());
 			result = appAccessManager.modify(JSON.toString(param));
 		}
@@ -66,7 +75,7 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 			PcAppAccess paa = new PcAppAccess();
 			paa.setId(service.getId());
 			paa.setAccessUrl(aacu.getAccessUrl());
-			appAccessSvc.saveOrUpdate(paa);
+			pcAppAccessSvc.saveOrUpdate(paa);
 		}else{
 			throw new ServiceException(" modify remote cfg error ! "); 
 		}
@@ -74,19 +83,29 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		return result;
 	}
 
+	private boolean checkChange(PcAppAccess service) {
+		if(service.getId()==null)
+			return true;
+		PcAppAccess old = pcAppAccessSvc.queryById(service.getId());
+		if(!old.getAccessCode().equals(service.getAccessCode())||!old.getAppImageId().equals(service.getAppImageId())){
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public String remove(String record) {
 		PcAppAccess service = JSON.toObject(record, PcAppAccess.class);
-		PcAppAccess access = appAccessSvc.queryById(service.getId());
+		PcAppAccess access = pcAppAccessSvc.queryById(service.getId());
 		//获取后场返回值 
 		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
-		PcAppImage appImage = appImageSvc.queryById(access.getAppImageId());
-		String fullName = appImage.getContainerFullName();
 		AppAccessModel appAccessModel = new AppAccessModel();
+		/**PcAppImage appImage = pcAppImageSvc.queryById(access.getAppImageId());
+		String fullName = appImage.getContainerFullName();
 		appAccessModel.setContainer(fullName);
 //		String dns = "_"+fullName+"._tcp.marathon."+resCenterSvc.queryById(access.getResCenterId()).getDomain();
 		String dns = "_"+fullName+"._tcp.marathon.ai";
-		appAccessModel.setDns(dns);
+		appAccessModel.setDns(dns);*/
 		appAccessModel.setProtocol(access.getProtocol());
 		appAccessModel.setAccessCode(access.getAccessCode());
 		appAccessModel.setAccessCodeOld(access.getAccessCode());
@@ -98,95 +117,58 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 	}
 
 	@Override
-	public String asynsaveOrUpdate(ParmDockerImage param) {
+	public String asynChange(ParmDockerImage param) {
 		AppAccessModel appAccessModel = new AppAccessModel();
 		//获取后场返回值 
 		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
 		String fullName = param.getDockerImage();
 		CPcAppImage cpcAppImage = new CPcAppImage();
 		cpcAppImage.setContainerFullName(fullName);
-		List<PcAppImage> list = appImageSvc.queryList(cpcAppImage, "ID desc");
+		List<PcAppImage> list = pcAppImageSvc.queryList(cpcAppImage, "ID desc");
 		if(list==null || list.size() == 0 ){
-		}else{
-			PcAppImage appImage = list.get(0);
-			CPcAppAccess cdt = new CPcAppAccess();
-			cdt.setAppId(appImage.getAppId());
-			cdt.setAppImageId(appImage.getId());
-			List<PcAppAccess> ls = appAccessSvc.queryList(cdt, null);
-			if(ls!=null && ls.size()>0){
-				PcAppAccess appAccess = ls.get(0);
-				if(appImage!=null)
-					appAccessModel.setContainer(appImage.getContainerFullName());
-				appAccessModel.setAccessCode(appAccess.getAccessCode());
-				appAccessModel.setAccessCodeOld(appAccess.getAccessCode());
-				PcResCenter resCenter = resCenterSvc.queryById(appAccess.getResCenterId());
-				if(appImage!=null&&resCenter!=null)
+			return result;
+		}
+		
+		PcAppImage appImage = list.get(0);
+		CPcAppAccess cdt = new CPcAppAccess();
+		cdt.setAppId(appImage.getAppId());
+		cdt.setAppImageId(appImage.getId());
+		List<PcAppAccess> ls = pcAppAccessSvc.queryList(cdt, null);
+		if(ls==null || ls.size() == 0 ){
+			return result;
+		}
+		PcAppAccess appAccess = ls.get(0);
+		if(appImage!=null)
+			appAccessModel.setContainer(appImage.getContainerFullName());
+		appAccessModel.setAccessCode(appAccess.getAccessCode());
+		appAccessModel.setAccessCodeOld(appAccess.getAccessCode());
+		PcResCenter resCenter = pcResCenterSvc.queryById(appAccess.getResCenterId());
+		if(appImage!=null&&resCenter!=null)
 //					appAccessModel.setDns("_"+appAccessModel.getContainer()+".marathon."+resCenter.getDomain());
-					appAccessModel.setDns("_"+appAccessModel.getContainer()+"._tcp.marathon.ai");
-				appAccessModel.setProtocol(appAccess.getProtocol());
+			appAccessModel.setDns("_"+appAccessModel.getContainer()+"._tcp.marathon.ai");
+		appAccessModel.setProtocol(appAccess.getProtocol());
 //				appAccessModel.setResCenterId(appAccess.getResCenterId().toString());
-				appAccessModel.setResCenterId("dev");
-				PcAppAccess old = appAccessSvc.queryById(appAccess.getId());
-				if(appAccess.getId()==null){
-					result = appAccessManager.add(JSON.toString(appAccessModel));
-				}else{
-					if(old==null)
-						old = appAccessSvc.queryById(appAccess.getId());
-					appAccessModel.setAccessCodeOld(old.getAccessCode());
-					result = appAccessManager.modify(JSON.toString(appAccessModel));
-				}
-				AppAccessCodeUrl aacu = JSON.toObject(result, AppAccessCodeUrl.class);
-				if("000000".equals(aacu.getCode())){
-					PcAppAccess paa = new PcAppAccess();
-					paa.setId(appAccess.getId());
-					paa.setAccessUrl(aacu.getAccessUrl());
-					appAccessSvc.saveOrUpdate(paa);
-				}else{
-					throw new ServiceException(" modify remote cfg error ! "); 
-				}
-			}
+		appAccessModel.setResCenterId("dev");
+		
+		
+		if("KILLED".equals(param.getTaskStatus())){
+			result = appAccessManager.delete(JSON.toString(appAccessModel));
+		}else if("RUNNING".equals(param.getTaskStatus())){
+			result = appAccessManager.modify(JSON.toString(appAccessModel));
 		}
-		return result;
-	}
-
-	@Override
-	public String asynremove(ParmDockerImage param) {
-		//获取后场返回值 
-		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
-		String fullName = param.getDockerImage();
-		CPcAppImage cpcAppImage = new CPcAppImage();
-		cpcAppImage.setContainerFullName(fullName);
-		List<PcAppImage> list = appImageSvc.queryList(cpcAppImage, "ID desc");
-		if(list==null || list.size() == 0 ){
+		
+		AppAccessCodeUrl aacu = JSON.toObject(result, AppAccessCodeUrl.class);
+		if("000000".equals(aacu.getCode())){
+			PcAppAccess paa = new PcAppAccess();
+			paa.setId(appAccess.getId());
+			paa.setAccessUrl(aacu.getAccessUrl());
+			pcAppAccessSvc.saveOrUpdate(paa);
 		}else{
-			PcAppImage appImage = list.get(0);
-			CPcAppAccess cdt = new CPcAppAccess();
-			cdt.setAppId(appImage.getAppId());
-			cdt.setAppImageId(appImage.getId());
-			List<PcAppAccess> ls = appAccessSvc.queryList(cdt, null);
-			if(ls!=null && ls.size()>0){
-				PcAppAccess appAccess = ls.get(0);
-				AppAccessModel appAccessModel = new AppAccessModel();
-				appAccessModel.setContainer(fullName);
-//				String dns = "_"+fullName+"._tcp.marathon."+resCenterSvc.queryById(appAccess.getResCenterId()).getDomain();
-				String dns = "_"+fullName+"._tcp.marathon.ai";
-				appAccessModel.setDns(dns);
-				appAccessModel.setProtocol(appAccess.getProtocol());
-				appAccessModel.setAccessCode(appAccess.getAccessCode());
-				appAccessModel.setAccessCodeOld(appAccess.getAccessCode());
-//				String resCenterId = appAccess.getResCenterId().toString();
-				String resCenterId="dev";
-				appAccessModel.setResCenterId(resCenterId);
-				
-				if("KILLED".equals(param.getTaskStatus())){
-					result = appAccessManager.delete(JSON.toString(appAccessModel));
-				}else if("RUNNING".equals(param.getTaskStatus())){
-					result = appAccessManager.modify(JSON.toString(appAccessModel));
-				}
-			}
+			throw new ServiceException(" modify remote cfg error ! "); 
 		}
 		return result;
 	}
+	
 
 
 }

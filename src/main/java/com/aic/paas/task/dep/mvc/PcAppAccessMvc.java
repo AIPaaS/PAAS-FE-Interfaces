@@ -28,10 +28,9 @@ public class PcAppAccessMvc {
 	 */
 	@RequestMapping("/add")
 	public void add(HttpServletRequest request, HttpServletResponse response, String record) {
-		logger.debug("register to consul===================== record : " + record);
+		logger.debug("modify haproxy.cfg===================== record : " + record);
 		BinaryUtils.checkEmpty(record, "record");
-		pcAppAccessPeer.saveOrUpdate(record);
-		ControllerUtils.returnJson(request, response, "");
+		ControllerUtils.returnJson(request, response, pcAppAccessPeer.saveOrUpdate(record));
 	}
 	
 	
@@ -42,10 +41,9 @@ public class PcAppAccessMvc {
 	 */
 	@RequestMapping("/remove")
 	public void remove(HttpServletRequest request, HttpServletResponse response, String record) {
-		logger.debug("deregister from consul===================== record : " + record);
+		logger.debug("modify haproxy.cfg===================== record : " + record);
 		BinaryUtils.checkEmpty(record, "record");
-		pcAppAccessPeer.remove(record);
-		ControllerUtils.returnJson(request, response, "");
+		ControllerUtils.returnJson(request, response, pcAppAccessPeer.remove(record));
 	}
 	
 	
