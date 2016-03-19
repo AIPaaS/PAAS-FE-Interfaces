@@ -3,6 +3,7 @@ package com.aic.paas.task.dep.bean;
 public class GeneralDeployResp {
 	public static final String SUCCESS = "000000";
 	public static final String FAILED = "999999";
+	public static final String NOCOTAINER = "999998";
 	private String userId;
 	private String applyType;
 	private String serviceId;

@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import com.aic.paas.task.dep.bean.ActionType;
 import com.aic.paas.task.dep.bean.AppImageSettings;
@@ -201,7 +202,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		logger.info("appVnoId" + appVnoId);
 		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
-
+		if(CollectionUtils.isEmpty(appImageList)){
+			return GeneralDeployResp.NOCOTAINER;
+		}else{
 		PcApp pcApp = appSvc.queryById(appId);
 
 		GeneralReq generalReq = new GeneralReq();
@@ -279,7 +282,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		
 		logger.info(JSON.toString(resStr));
 		return resStr;
-
+		}
 	}
 
 	@Override
