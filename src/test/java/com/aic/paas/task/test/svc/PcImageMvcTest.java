@@ -17,12 +17,12 @@ public class PcImageMvcTest {
 		callBackMap.put("tag", "9.9.9");
 		callBackMap.put("time", "2016-03-19 11:32:56.816028");
 		callBackMap.put("status", "success");// success / error
-		callBackMap.put("build_id","123");
+		callBackMap.put("build_id","136");
 		String param1 = JSON.toString(callBackMap);
 		System.out.println(param1);
 		
-		String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
-		//String sendPostRequest = HttpClientUtil.sendPostRequest("http://10.1.245.100:16009/paas-task/dev/buildTaskMvc/updateBuildTaskByCallBack", json);
+//		String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
+		String sendPostRequest = HttpClientUtil.sendPostRequest("http://10.1.245.100:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
 		
 		System.out.println("------------------"+sendPostRequest);
 		
