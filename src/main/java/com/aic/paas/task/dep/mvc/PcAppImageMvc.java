@@ -88,7 +88,19 @@ public class PcAppImageMvc {
 		String resp = appImagePeer.pauseApp(appId);
 		ControllerUtils.returnJson(request, response, resp);
 	}
-
+	/**
+	 * 重新开始应用
+	 * @param request
+	 * @param response
+	 * @param appId
+	 */
+	@RequestMapping("/resumeApp")
+	public void resume(HttpServletRequest request, HttpServletResponse response, Long appId) {
+		BinaryUtils.checkEmpty(appId, "appId");
+		String resp = appImagePeer.resumeApp(appId);
+		ControllerUtils.returnJson(request, response, resp);
+	}
+	
 	/**
 	 * 开始定时部署
 	 * 

@@ -62,6 +62,12 @@ public interface PcAppImagePeer {
 	public String pauseApp(Long appId);
 
 	/**
+	 * 重新开始应用	
+	 * @param appId
+	 * @return
+	 */
+	public String resumeApp(Long appId);
+	/**
 	 * 获取应用日志
 	 * 
 	 * @param appId
@@ -115,4 +121,5 @@ public interface PcAppImagePeer {
 	void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus);
 
 	void updateDepHistory(Long appId, Long appVnoId, Integer runStatus, Integer preRunStatus);
+
 }

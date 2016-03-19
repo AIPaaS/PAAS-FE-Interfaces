@@ -79,7 +79,7 @@ public class CallbackMvc {
 	private void afterStart(CallBackReq callBackReq, int pcAppStatus) {
 		PcAppTask pcAppTask = pcAppTaskSvc.queryById(callBackReq.getReqId());
 		Map<String, Long> idMap = getAppDepHistoryIdoiMap(callBackReq.getReqId().longValue());
-		int state = -1;
+		int state = 1;
 		Long appDepHistoryId=null;
 		for (CallBackReq.Container container : callBackReq.getContainers()) {
 			String containerName = container.getContainerName();
