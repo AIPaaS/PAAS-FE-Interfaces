@@ -162,6 +162,13 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		AppAccessCodeUrl aacu = JSON.toObject(result, AppAccessCodeUrl.class);
 		if(!"000000".equals(aacu.getCode())){
 			throw new ServiceException(" modify remote cfg error ! "); 
+		}else{
+			if(BinaryUtils.isEmpty(appAccess.getAccessUrl())){
+				PcAppAccess paa = new PcAppAccess();
+				paa.setId(appAccess.getId());
+				paa.setAccessUrl(aacu.getAccessUrl());
+				pcAppAccessSvc.saveOrUpdate(paa);
+			}
 		}
 		return result;
 	}
