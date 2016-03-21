@@ -60,9 +60,8 @@ public class PcBuildTaskMvc {
 	@RequestMapping(value="saveBuildTask")
 	@ResponseBody
 	public String saveBuildTask(@RequestBody String param) {		
-		
+		logger.info("paas-task:PcBuildTaskMvc:saveBuildTask:param="+param);
 		System.out.println("--------------------------------------------");
-		System.out.println(param);
 		String result = buildTaskPeer.saveBuildTask(param);
 		return result;		
 		

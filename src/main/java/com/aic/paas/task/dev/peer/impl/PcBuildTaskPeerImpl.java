@@ -82,6 +82,7 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 
 	@Override
 	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc){
+		String result = "error";
 		String namespace = pbtc.getNamespace();
 		String[] namespaces = namespace.split("_____");
 		String mntCode = "";
@@ -99,9 +100,17 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		//1.根据租户code namespace[mnt_code]，获取租户id mnt_id []
 		if(list!=null && list.size()>0){
 			pbtc.setMnt_id(list.get(0).getId().toString());
+		}else{
+			logger.info("出错啦！查询不到租户信息！");
+			return result;
 		}
+		
 		//2.根据	根据回调函数，查询所属机房的Id
 		String compRoomId = buildSvc.queryCompRoomIdByCallBack(pbtc);
+		if("".equals(compRoomId)){
+			logger.info("出错啦！查询不到产品所属的机房！");
+			return result;
+		}
 		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId="+ compRoomId);
 		//3.根据机房Id，查询镜像库Id
 		CPcImageRepository cir = new CPcImageRepository();
@@ -116,6 +125,10 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		if(pirlist != null && pirlist.size()>0){
 			if(pirlist.get(0).getId()!=null)imgRespId = pirlist.get(0).getId().toString();
 		}
+		if("".equals(imgRespId)){
+			logger.info("出错啦！查询不到房间对应的镜像库！");
+			return result;
+		}
 		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId="+ imgRespId);
 		
 		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
@@ -127,6 +140,7 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		String result = "";
 		try {
 			result = HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/builds", param);
+			logger.info("paas-task:PcBuildTaskPeerImpl:saveBuildTask:param="+ param);
 		} catch (Exception e) {
 			logger.error("点击构建时，远程调用失败！");
 		}		
