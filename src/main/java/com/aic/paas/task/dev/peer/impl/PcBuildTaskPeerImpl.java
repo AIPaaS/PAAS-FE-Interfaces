@@ -93,16 +93,16 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		cdt.setMntCodeEqual(mntCode);
 		cdt.setStatus(1);//0=待审核  1=审核通过  2=审核退回
 		cdt.setDataStatus(1);//数据状态：1-正常 0-删除
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:cdt=", cdt);
+		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:cdt="+ cdt);
 		list = merchentSvc.queryList(cdt, null);
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:list.size()=", list.size());
+		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:list.size()="+list.size());
 		//1.根据租户code namespace[mnt_code]，获取租户id mnt_id []
 		if(list!=null && list.size()>0){
 			pbtc.setMnt_id(list.get(0).getId().toString());
 		}
 		//2.根据	根据回调函数，查询所属机房的Id
 		String compRoomId = buildSvc.queryCompRoomIdByCallBack(pbtc);
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId=", compRoomId);
+		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId="+ compRoomId);
 		//3.根据机房Id，查询镜像库Id
 		CPcImageRepository cir = new CPcImageRepository();
 		cir.setRoomId(Long.parseLong(compRoomId));
@@ -111,12 +111,12 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		cir.setDataStatus(1);
 		
 		List<PcImageRepository> pirlist =imageRepositorySvc.queryList(cir, "ID");
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:pirlist.size()=", pirlist.size());
+		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:pirlist.size()="+ pirlist.size());
 		String imgRespId = "";//所属镜像库
 		if(pirlist != null && pirlist.size()>0){
 			if(pirlist.get(0).getId()!=null)imgRespId = pirlist.get(0).getId().toString();
 		}
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId=", imgRespId);
+		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId="+ imgRespId);
 		
 		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
 	}
