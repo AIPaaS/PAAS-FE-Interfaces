@@ -70,8 +70,9 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("namespace=").append(namespace).append("&repo_name=").append(repo_name).append("&build_id=")
 				.append(build_id);
-		String data = HttpClientUtil.sendGet(buildManagementUrl + "/v1/builds", buffer.toString());// TODO
-																									// 接口;
+		logger.info("task中查询构建历史的入参信息buffer："+buffer.toString());
+  		String data = HttpClientUtil.sendGet(buildManagementUrl + "/v1/builds", buffer.toString());
+		logger.info("task中查询构建历史的回调结果data："+data);																							
 		if (data == null || data.equals("")) {
 			result.put("error_code", "999999");
 			return result.toString();
