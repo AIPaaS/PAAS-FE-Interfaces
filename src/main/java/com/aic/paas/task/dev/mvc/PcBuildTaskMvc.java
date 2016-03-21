@@ -71,6 +71,7 @@ public class PcBuildTaskMvc {
 	@RequestMapping(value="updateBuildTaskByCallBack")
 	@ResponseBody
 	public String updateBuildTaskByCallBack(@RequestBody String param){
+		logger.info("paas-task:PcBuildTaskMvc:updateBuildTaskByCallBack:param", param);
 		System.out.println("param =========================="+param);
 		PcBuildTaskCallBack pbtc = new PcBuildTaskCallBack();
 		pbtc = JSON.toObject(param, PcBuildTaskCallBack.class);
@@ -79,8 +80,10 @@ public class PcBuildTaskMvc {
 		String result ="";
 		try {
 			result = buildTaskPeer.updateBuildTaskByCallBack(pbtc);
+			logger.info("paas-task:PcBuildTaskMvc:updateBuildTaskByCallBack:result", result);
 		} catch (Exception e) {
 			result = "error";
+			logger.info("paas-task:PcBuildTaskMvc:updateBuildTaskByCallBack:result", result);
 		}
 		
 		return result;
