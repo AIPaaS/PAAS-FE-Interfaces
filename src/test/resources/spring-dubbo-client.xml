@@ -42,7 +42,7 @@
 	<dubbox:rest id="DubboxRest_PcAppDepInstanceSvc" interface="com.aic.paas.task.dep.rest.PcAppDepInstanceSvc" client="DubboRestClient_DEP"/>
 	<dubbox:rest id="DubboxRest_PcImageRepositorySvc" interface="com.aic.paas.task.dep.rest.PcImageRepositorySvc" client="DubboRestClient_DEP"/>
 	<dubbox:rest id="DubboxRest_PcAppDepHistorySvc" interface="com.aic.paas.task.dep.rest.PcAppDepHistorySvc" client="DubboRestClient_DEP"/>
-	
+	<dubbox:rest id="DubboxRest_PcKvPairSvc" interface="com.aic.paas.task.dep.rest.PcKvPairSvc" client="DubboRestClient_DEP"/>
 	
 	<!-- dev -->
 	<dubbox:rest id="DubboxRest_PcImageSvc" interface="com.aic.paas.task.dev.rest.PcBuildSvc" client="DubboRestClient_DEV" />

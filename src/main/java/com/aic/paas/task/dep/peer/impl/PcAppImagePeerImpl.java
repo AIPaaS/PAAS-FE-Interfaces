@@ -16,6 +16,8 @@ import com.aic.paas.task.dep.bean.AppImageSettings;
 import com.aic.paas.task.dep.bean.AppImageSvcInfo;
 import com.aic.paas.task.dep.bean.GeneralDeployResp;
 import com.aic.paas.task.dep.bean.GeneralReq;
+import com.aic.paas.task.dep.bean.GeneralReq.Container;
+import com.aic.paas.task.dep.bean.GeneralReq.Container.For;
 import com.aic.paas.task.dep.bean.GeneralTimerReq;
 import com.aic.paas.task.dep.bean.LogReq;
 import com.aic.paas.task.dep.bean.Parameter;
@@ -24,8 +26,6 @@ import com.aic.paas.task.dep.bean.PcAppDepHistory;
 import com.aic.paas.task.dep.bean.PcAppImage;
 import com.aic.paas.task.dep.bean.PcAppTask;
 import com.aic.paas.task.dep.bean.PcKvPair;
-import com.aic.paas.task.dep.bean.GeneralReq.Container;
-import com.aic.paas.task.dep.bean.GeneralReq.Container.For;
 import com.aic.paas.task.dep.peer.PcAppImagePeer;
 import com.aic.paas.task.dep.rest.IDeployServiceManager;
 import com.aic.paas.task.dep.rest.PcAppDepHistorySvc;
@@ -33,6 +33,7 @@ import com.aic.paas.task.dep.rest.PcAppImageSvc;
 import com.aic.paas.task.dep.rest.PcAppSvc;
 import com.aic.paas.task.dep.rest.PcAppTaskSvc;
 import com.aic.paas.task.dep.rest.PcAppVersionSvc;
+import com.aic.paas.task.dep.rest.PcKvPairSvc;
 import com.aic.paas.task.dev.bean.CPcImage;
 import com.aic.paas.task.dev.bean.PcImage;
 import com.aic.paas.task.dev.rest.PcImageSvc;
@@ -60,6 +61,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Autowired
 	PcAppTaskSvc pcAppTaskSvc;
+
+	@Autowired
+	PcKvPairSvc pcKvPairSvc;
 
 	@Autowired
 	IDeployServiceManager iDeployServiceManager;
@@ -111,6 +115,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 					image.setImageName(settings.getAppImage().getImage());
 				}
 				settings.setImage(image);
+				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
+				settings.setParams(params);
 			}
 		}
 
