@@ -19,6 +19,7 @@ import com.aic.paas.task.dep.rest.IAppAccessManager;
 import com.aic.paas.task.dep.rest.PcAppAccessSvc;
 import com.aic.paas.task.dep.rest.PcAppImageSvc;
 import com.aic.paas.task.dep.rest.PcResCenterSvc;
+import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
@@ -42,8 +43,9 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
 
 		PcAppAccess service = JSON.toObject(record, PcAppAccess.class);
+		PcAppAccess old = pcAppAccessSvc.queryById(service.getId());
 		//判断是否变化
-		boolean change = checkChange(service);
+		boolean change = checkChange(service,old);
 		if(!change)
 			return result;
 		
@@ -61,7 +63,6 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 //		param.setResCenterId(service.getResCenterId().toString());
 		param.setResCenterId("dev");
 		//获取后场返回值 
-		PcAppAccess old = pcAppAccessSvc.queryById(service.getId());
 		if(service.getId()==null){
 			result = appAccessManager.add(JSON.toString(param));
 		}else{
@@ -83,11 +84,12 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		return result;
 	}
 
-	private boolean checkChange(PcAppAccess service) {
+	private boolean checkChange(PcAppAccess service,PcAppAccess old) {
 		if(service.getId()==null)
 			return true;
-		PcAppAccess old = pcAppAccessSvc.queryById(service.getId());
-		if(!old.getAccessCode().equals(service.getAccessCode())||!old.getAppImageId().equals(service.getAppImageId())){
+		if(!old.getAccessCode().equals(service.getAccessCode())||!old.getAppImageId().equals(service.getAppImageId())
+				||!old.getProtocol().equals(service.getProtocol())
+				||BinaryUtils.isEmpty(old.getAccessUrl())){
 			return true;
 		}
 		return false;
