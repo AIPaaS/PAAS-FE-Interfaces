@@ -139,7 +139,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
 				BeanUtils.copyProperties(pcAppDepHistory, setting);
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
-				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 				pcAppDepHistory.setId(null);
 				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 			} catch (Exception e) {
@@ -170,7 +170,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			List<Parameter> attrs = new ArrayList<Parameter>();
 			List<PcKvPair> paramList = setting.getParams();
@@ -249,7 +249,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setInstances(setting.getAppImage().getInstanceCount());
 			PcAppImage pcAppImage = setting.getAppImage();
 			container.setImgFullName(pcAppImage.getImage());
@@ -294,7 +294,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			containers.add(container);
 		}
 		generalReq.setContainers(containers);
@@ -332,7 +332,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setInstances(setting.getAppImage().getInstanceCount());
 			containers.add(container);
 		}
@@ -371,7 +371,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : appImageList) {
 			Container container = new Container();
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setInstances(0);
 			containers.add(container);
 		}
@@ -416,7 +416,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		for (AppImageSettings setting : settings) {
 			if (setting.getAppImage() != null) {
 				GeneralReq.Container container = new GeneralReq.Container();
-				container.setContainerName(setting.getAppImage().getContainerFullName());
+				container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 				containers.add(container);
 			}
 		}
@@ -443,7 +443,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			generalTimerReq.setStart(setting.getAppImage().getTimerStartTime() + "");
 			generalTimerReq.setPeriod("T" + setting.getAppImage().getTimerExp() + "S");
@@ -515,7 +515,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
 			container.setContainerId(setting.getAppImage().getId().toString());
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			generalTimerReq.setStart(setting.getAppImage().getTimerStartTime() + "");
 			generalTimerReq.setPeriod("T" + setting.getAppImage().getTimerExp() + "S");
@@ -581,7 +581,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 		}
 		generalTimerReq.setContainer(container);
 
@@ -623,7 +623,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 		}
 		generalTimerReq.setContainer(container);
 
@@ -663,7 +663,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		GeneralTimerReq.Container container = new GeneralTimerReq.Container();
 		for (AppImageSettings setting : appImageList) {
-			container.setContainerName(setting.getAppImage().getContainerFullName());
+			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 		}
 		generalTimerReq.setContainer(container);
 
