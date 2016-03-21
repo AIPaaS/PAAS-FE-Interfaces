@@ -64,12 +64,7 @@ public class PcBuildTaskMvc {
 		System.out.println("--------------------------------------------");
 		System.out.println(param);
 		String result = buildTaskPeer.saveBuildTask(param);
-		
-		//业务逻辑处理		
-		PcBuildTaskResponse pbtr = new PcBuildTaskResponse();
-		pbtr = JSON.toObject(result, PcBuildTaskResponse.class);
-
-		return JSON.toString(pbtr);		
+		return result;		
 		
 		
 	}

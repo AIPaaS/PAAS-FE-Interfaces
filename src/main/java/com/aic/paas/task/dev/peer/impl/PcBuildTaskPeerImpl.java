@@ -118,7 +118,13 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 
 	@Override
 	public String saveBuildTask(String param) {
-		String result = HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/builds", param);
+		String result = "";
+		try {
+			result = HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/builds", param);
+		} catch (Exception e) {
+			logger.error("点击构建时，远程调用失败！");
+		}		
+		
 		return result;
 	}
 

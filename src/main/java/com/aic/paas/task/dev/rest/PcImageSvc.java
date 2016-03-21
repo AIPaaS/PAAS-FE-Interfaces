@@ -1,6 +1,7 @@
 package com.aic.paas.task.dev.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aic.paas.task.dev.bean.CPcImage;
 import com.aic.paas.task.dev.bean.PcImage;
@@ -40,6 +41,17 @@ public interface PcImageSvc {
 	
 	
 	
+	/**
+	 * @param param 回调方法，返回的参数
+	 * @return success 回调成功；error回调失败
+	 */
+	public String updateImageByCallBack(Map<String,String> updateMap);
+	/**
+	 * 镜像发布回调接口
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncCallback(String param);
 	
 
 }
