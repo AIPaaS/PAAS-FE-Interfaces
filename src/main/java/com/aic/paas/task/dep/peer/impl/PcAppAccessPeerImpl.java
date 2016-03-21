@@ -163,6 +163,12 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		}
 		return result;
 	}
+
+	@Override
+	public String saveOrUpdateByImg(String record) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 

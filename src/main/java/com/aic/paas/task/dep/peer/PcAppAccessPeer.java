@@ -23,4 +23,12 @@ public interface PcAppAccessPeer {
 	 */
 	String asynChange(ParmDockerImage   record);
 
+	
+	/**
+	 * 通过页面维护，修改服务器上的haproxy.cfg
+	 * 通过容器定义--触发
+	 * @param record  PcAppImage
+	 * @return
+	 */
+	String saveOrUpdateByImg(String   record);
 }

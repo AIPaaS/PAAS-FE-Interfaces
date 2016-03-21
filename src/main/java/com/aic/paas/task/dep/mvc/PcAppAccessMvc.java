@@ -47,4 +47,18 @@ public class PcAppAccessMvc {
 	}
 	
 	
+	/**
+	 * 新增或修改远端haproxy.cf配置信息
+	 * 通过容器定义--触发
+	 * @param record  PcAppImage
+	 */
+	@RequestMapping("/img/modfiy")
+	public void addByImg(HttpServletRequest request, HttpServletResponse response, String record) {
+		logger.debug("modify haproxy.cfg===================== record : " + record);
+		BinaryUtils.checkEmpty(record, "record");
+		ControllerUtils.returnJson(request, response, pcAppAccessPeer.saveOrUpdateByImg(record));
+	}
+	
+	
+	
 }
