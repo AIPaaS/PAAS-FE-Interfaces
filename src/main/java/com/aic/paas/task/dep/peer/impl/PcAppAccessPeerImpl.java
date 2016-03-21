@@ -125,7 +125,7 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 		CPcAppImage cpcAppImage = new CPcAppImage();
 		cpcAppImage.setContainerFullName(fullName);
 		List<PcAppImage> list = pcAppImageSvc.queryList(cpcAppImage, "ID desc");
-		if(list==null || list.size() == 0 ){
+		if(list == null || list.size() == 0 ){
 			return result;
 		}
 		
@@ -166,8 +166,24 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 
 	@Override
 	public String saveOrUpdateByImg(String record) {
-		// TODO Auto-generated method stub
-		return null;
+		PcAppImage service = JSON.toObject(record, PcAppImage.class);
+		PcAppImage pcAppImage = pcAppImageSvc.queryById(service.getId());
+		String result = "{\"code\":\"000000\",\"msg\":\"ok\"}";
+//		AppAccessModel appAccessModel = new AppAccessModel();
+		CPcAppAccess cpcAppAccess = new CPcAppAccess(); 
+		cpcAppAccess.setAppId(pcAppImage.getId());
+		cpcAppAccess.setAppImageId(pcAppImage.getImageId());
+		List<PcAppAccess> list = pcAppAccessSvc.queryList(cpcAppAccess, null);
+		if(list==null || list.size()==0){
+			return result;
+		}
+		PcAppAccess pcAppAccess = list.get(0);
+		if(service.getCustom1()==1){
+			result = saveOrUpdate(JSON.toString(pcAppAccess));
+		}else{
+			result = remove(JSON.toString(pcAppAccess));
+		}
+		return result;
 	}
 	
 
