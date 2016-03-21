@@ -82,7 +82,7 @@ public class NsqReceiveManager implements InitializingBean {
 	
 	
 	private void runEntity() {
-		try {
+		/*try {
 			logger.info(" NsqReceiveManager  is initializing ... ");
 			if(BinaryUtils.isEmpty(this.nsqHost)) {
 				throw new ServiceException(" not set property 'nsqHost'! ");
@@ -106,7 +106,7 @@ public class NsqReceiveManager implements InitializingBean {
 			}
 		}catch(Throwable t) {
 			logger.error(" initialization NsqReceiveManager error! ", t);
-		}
+		}*/
 	}
 
 
