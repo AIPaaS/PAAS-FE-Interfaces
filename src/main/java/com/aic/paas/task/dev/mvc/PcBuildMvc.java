@@ -28,9 +28,9 @@ public class PcBuildMvc {
 	@RequestMapping(value="deleteBuild")
 	@ResponseBody
 	public String delete(@RequestBody String param) {	
-		System.out.println(param);
-		
+		logger.info("---------删除工程-----------task工程------调api接口  入参param："+param);
 		String req = buildPeer.removePcBuildApi(param);
+		logger.info("---------删除工程-----------task工程------调api接口  回参req："+req);
 		return req;
 		
 		//DemoResponse deresp = new DemoResponse();		
