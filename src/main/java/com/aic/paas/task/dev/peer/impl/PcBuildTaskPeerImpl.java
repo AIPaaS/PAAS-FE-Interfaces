@@ -140,9 +140,9 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		String result = "";
 		try {
 			result = HttpClientUtil.sendPostRequest(buildManagementUrl+"/v1/builds", param);
-			logger.info("paas-task:PcBuildTaskPeerImpl:saveBuildTask:param="+ param);
+			logger.info("========paas-task:PcBuildTaskPeerImpl:saveBuildTask:result="+ result);
 		} catch (Exception e) {
-			logger.error("点击构建时，远程调用失败！");
+			logger.info("点击构建时，远程调用失败！");
 		}		
 		
 		return result;

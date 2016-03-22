@@ -34,8 +34,9 @@ public class PcBuildTaskMvc {
 	@ResponseBody
 	public String post(@RequestBody String param) {
 		System.out.println(param);
-
+		logger.info("---------构建中止------task工程------掉api接口入参param："+param);
 		String req = buildTaskPeer.stopPcBuildTaskApi(param);
+		logger.info("---------构建中止------task工程------掉api接口回参req："+req);
 		return req;
 
 		// HttpClientUtil.sendPostRequest
@@ -60,7 +61,7 @@ public class PcBuildTaskMvc {
 	@RequestMapping(value="saveBuildTask")
 	@ResponseBody
 	public String saveBuildTask(@RequestBody String param) {		
-		logger.info("paas-task:PcBuildTaskMvc:saveBuildTask:param="+param);
+		logger.info("========paas-task:PcBuildTaskMvc:saveBuildTask:param="+param);
 		System.out.println("--------------------------------------------");
 		String result = buildTaskPeer.saveBuildTask(param);
 		return result;		
