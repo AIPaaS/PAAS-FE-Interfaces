@@ -184,6 +184,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKvKey());
 				pa.setValue(pair.getKvVal());
+				attrs.add(pa);
 			}
 			container.setAttrs(attrs);
 			container.setVersion(pcApp.getVersionNo());
