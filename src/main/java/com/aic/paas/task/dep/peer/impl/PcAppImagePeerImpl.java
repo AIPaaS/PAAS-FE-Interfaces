@@ -165,11 +165,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	public String startDeploy(Long appId, Long appVnoId) {
 		logger.info("appId ++++:" + appId);
 		logger.info("appVnoId" + appVnoId);
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
-
 		PcApp pcApp = appSvc.queryById(appId);
-
 		GeneralReq generalReq = new GeneralReq();
 		generalReq.setAppId(pcApp.getId().toString());
 		generalReq.setAppName(pcApp.getAppCode());
@@ -191,7 +188,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pa.setValue(pair.getKvVal());
 				attrs.add(pa);
 			}
-			for(PcKvPair pair : setting.getCallServiceParams()) {
+			for (PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKeyAlias());
 				pa.setValue(pair.getKvVal());
@@ -210,12 +207,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// crontainer.setDepends(containeIdList.toArray().toString());
 			container.setCpu(setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
-			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
 			container.setInstances(setting.getAppImage().getInstanceCount());
-			// containe.set
-			if (setting.getAppImage().getIsSupportFlex().equals(1)) {
 
+			if (setting.getAppImage().getIsSupportFlex().equals(1)) {
 				container.setMaxInst(setting.getAppImage().getMaxInstanceCount());
 				container.setMinInst(setting.getAppImage().getMinInstanceCount());
 				container.setScaleInCpu(setting.getAppImage().getCpuFlexLowerLimit());
@@ -246,6 +241,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 			// update app status
 			pcApp.setStatus(2);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 			appSvc.saveOrUpdate(pcApp);
 		}
 		logger.info(JSON.toString(resStr));
@@ -272,7 +268,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			PcAppImage pcAppImage = setting.getAppImage();
 			container.setImgFullName(pcAppImage.getImage());
 			containers.add(container);
-			
+
 			List<Parameter> attrs = new ArrayList<Parameter>();
 			for (PcKvPair pair : setting.getParams()) {
 				Parameter pa = new Parameter();
@@ -280,7 +276,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pa.setValue(pair.getKvVal());
 				attrs.add(pa);
 			}
-			for(PcKvPair pair : setting.getCallServiceParams()) {
+			for (PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKeyAlias());
 				pa.setValue(pair.getKvVal());
@@ -314,7 +310,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
+
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -339,6 +335,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		}
 		return resStr;
 	}
@@ -346,13 +343,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
-
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
 			return "";
 		}
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
+
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -379,6 +375,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		}
 		return resStr;
 	}
@@ -391,7 +388,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
+
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -417,6 +414,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
+			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		}
 		return resStr;
 	}
