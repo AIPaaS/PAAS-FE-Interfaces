@@ -150,11 +150,11 @@ public class PcAppAccessPeerImpl implements PcAppAccessPeer {
 			appAccessModel.setDns("_"+appAccessModel.getContainer()+"._tcp.marathon.ai");
 		appAccessModel.setProtocol(appAccess.getProtocol());
 //				appAccessModel.setResCenterId(appAccess.getResCenterId().toString());
-		appAccessModel.setResCenterId("dev");
+		appAccessModel.setResCenterId("A");
 		
-		
+		logger.info(JSON.toString(appAccessModel));;
 		if("KILLED".equals(param.getTaskStatus())){
-			result = appAccessManager.delete(JSON.toString(appAccessModel));
+//			result = appAccessManager.delete(JSON.toString(appAccessModel));
 		}else if("RUNNING".equals(param.getTaskStatus())){
 			result = appAccessManager.modify(JSON.toString(appAccessModel));
 		}

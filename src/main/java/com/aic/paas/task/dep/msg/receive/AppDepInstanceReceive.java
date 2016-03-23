@@ -59,11 +59,17 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 		// 校验必填字段
 		if (!checkParam(dockerIntstance)) return;
 
+		String dockerImageName = dockerIntstance.getDockerImage();
+		if(dockerImageName.startsWith("/")){
+			dockerImageName = dockerImageName.substring(1);
+		}
+		dockerIntstance.setDockerImage(dockerImageName);
+		
 		// 1
 		processDepInstance(dockerIntstance);
 
 		// 2
-		processPcAppAccess(dockerIntstance);
+//		processPcAppAccess(dockerIntstance);
 	}
 
 	private void processPcAppAccess(ParmDockerImage dockerIntstance) {
