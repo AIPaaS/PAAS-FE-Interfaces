@@ -1,4 +1,4 @@
-package com.aic.paas.task.peer.res;
+package com.aic.paas.task.res.peer;
 
 public interface PcResManagePeer {
 	

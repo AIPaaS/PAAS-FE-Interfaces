@@ -38,6 +38,6 @@
     <bean class="com.aic.paas.task.dep.peer.impl.PcAppDepInstancePeerImpl" />
             
     
-    
+    <bean class="com.aic.paas.task.res.peer.impl.PcResManagePeerImpl"></bean>
     
 </beans>

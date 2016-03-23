@@ -23,9 +23,4 @@
     <import resource="classpath:spring/spring-paas-task-dep.xml" />
     
     
-    
-    
-        
-    <bean class="com.aic.paas.task.peer.res.impl.PcResManagePeerImpl"></bean>
-    
 </beans>
