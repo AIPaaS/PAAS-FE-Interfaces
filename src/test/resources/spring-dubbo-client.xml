@@ -55,7 +55,7 @@
 	<dubbo:reference id="iDeployServiceManager" interface="com.aic.paas.task.dep.rest.IDeployServiceManager" url="${dubbox.rest.root.beam}" timeout="${dubbox.rest.client.timeout}"/>
 	
 	<!--  be-rm  -->
-	<dubbo:reference id="iResCenterServiceManager" interface="com.aic.paas.task.rest.res.IResCenterServiceManager" url="${dubbox.rest.root.berm}"/>
+	<dubbo:reference id="iResCenterServiceManager" interface="com.aic.paas.task.res.rest.IResCenterServiceManager" url="${dubbox.rest.root.berm}" timeout="${dubbox.rest.client.timeout}"/>
 	
 </beans>
 
