@@ -6,6 +6,7 @@ import com.aic.paas.task.dep.bean.AppImageSettings;
 import com.aic.paas.task.dep.bean.AppImageSvcInfo;
 import com.aic.paas.task.dep.bean.CPcAppImage;
 import com.aic.paas.task.dep.bean.PcAppImage;
+import com.aic.paas.task.dep.bean.PcAppImgSvc;
 import com.aic.paas.task.dep.bean.PcKvPair;
 import com.aic.paas.task.dep.bean.PcService;
 import com.binary.jdbc.Page;
@@ -177,8 +178,10 @@ public interface PcAppImageSvc {
 	public void finishAppImageSettings(Long appImageId);
 	
 	
+	public int getAppImageCount(Long appId);
 	
 	
+	public List<PcAppImgSvc> getPcAppImgSvc(Long appImageId);
 	
 	
 }

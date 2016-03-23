@@ -25,6 +25,7 @@ import com.aic.paas.task.dep.bean.Parameter;
 import com.aic.paas.task.dep.bean.PcApp;
 import com.aic.paas.task.dep.bean.PcAppDepHistory;
 import com.aic.paas.task.dep.bean.PcAppImage;
+import com.aic.paas.task.dep.bean.PcAppImgSvc;
 import com.aic.paas.task.dep.bean.PcAppTask;
 import com.aic.paas.task.dep.bean.PcKvPair;
 import com.aic.paas.task.dep.peer.PcAppImagePeer;
@@ -65,6 +66,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Autowired
 	PcKvPairSvc pcKvPairSvc;
+	
+	@Autowired
+	PcAppImageSvc pcAppImageSvc;
 
 	@Autowired
 	IDeployServiceManager iDeployServiceManager;
@@ -118,6 +122,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				settings.setImage(image);
 				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
 				settings.setParams(params);
+				List<PcAppImgSvc> imgSvcs = pcAppImageSvc.getPcAppImgSvc(settings.getAppImage().getId());
+				List<PcKvPair> serviceParams = new ArrayList<>();
+				for (PcAppImgSvc pcAppImgSvc : imgSvcs) {
+					List<PcKvPair> serviceKv = pcKvPairSvc.getPcKvPairs(pcAppImgSvc.getId(), 3);
+					serviceParams.addAll(serviceKv);
+				}
+				settings.setCallServiceParams(serviceParams);
 			}
 		}
 
@@ -237,6 +248,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			List<Parameter> attrs = new ArrayList<Parameter>();
 			List<PcKvPair> paramList = setting.getParams();
 			for (PcKvPair pair : paramList) {
+				Parameter pa = new Parameter();
+				pa.setKey(pair.getKvKey());
+				pa.setValue(pair.getKvVal());
+				attrs.add(pa);
+			}
+			for (PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKvKey());
 				pa.setValue(pair.getKvVal());
