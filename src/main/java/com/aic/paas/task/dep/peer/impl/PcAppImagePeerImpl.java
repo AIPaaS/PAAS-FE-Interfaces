@@ -193,7 +193,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			}
 			for(PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
-				pa.setKey(pair.getKvKey());
+				pa.setKey(pair.getKeyAlias());
 				pa.setValue(pair.getKvVal());
 				attrs.add(pa);
 			}
@@ -282,7 +282,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			}
 			for(PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
-				pa.setKey(pair.getKvKey());
+				pa.setKey(pair.getKeyAlias());
 				pa.setValue(pair.getKvVal());
 				attrs.add(pa);
 			}
