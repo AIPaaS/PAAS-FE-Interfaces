@@ -46,5 +46,6 @@
     
     <bean class="com.aic.paas.task.peer.dep.impl.PcAppImagePeerImpl"></bean>
         
+    <bean class="com.aic.paas.task.peer.res.impl.PcResManagePeerImpl"></bean>
     
 </beans>
