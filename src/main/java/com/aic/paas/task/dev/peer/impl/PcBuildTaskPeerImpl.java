@@ -44,7 +44,12 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 			this.buildManagementUrl = buildManagementUrl.trim();
 		}
 	}
-
+	private String wdevUrl;
+	public void setWdevUrl(String wdevUrl) {
+		if (wdevUrl != null) {
+			this.wdevUrl = wdevUrl.trim();
+		}
+	}
 	// @Autowired
 	// PcAppImageSvc appImageSvc;
 
@@ -130,8 +135,13 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 			return result;
 		}
 		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId="+ imgRespId);
+		pbtc.setImgRespId(imgRespId);
+		String sendParam = JSON.toString(pbtc);
 		
-		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
+//		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
+		wdevUrl = "http://localhost:16203/paas-wdev";
+		String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/buildtask/updateBuildTaskByCallBack", sendParam);
+		return sendResult;
 	}
 
 
