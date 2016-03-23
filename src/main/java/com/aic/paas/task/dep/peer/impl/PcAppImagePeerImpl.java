@@ -164,11 +164,14 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
 				BeanUtils.copyProperties(pcAppDepHistory, setting);
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
-				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName());
-				pcAppDepHistory.setAppVnoId(appVnoId);
-				pcAppDepHistory.setAppId(appId);
-				pcAppDepHistory.setRunStatus(runStatus);
+				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 				pcAppDepHistory.setId(null);
+				pcAppDepHistory.setAppVersionNo(pcApp.getVersionNo());
+				pcAppDepHistory.setNetZoneId(setting.getAppImage().getNetZoneId());
+				pcAppDepHistory.setImageName(setting.getImage().getImageName());
+				pcAppDepHistory.setImageFullName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setContainerFullName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 				if(runStatus!=3){
 					pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 				}
