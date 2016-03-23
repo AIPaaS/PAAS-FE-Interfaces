@@ -26,5 +26,6 @@
     
     
         
+    <bean class="com.aic.paas.task.peer.res.impl.PcResManagePeerImpl"></bean>
     
 </beans>
