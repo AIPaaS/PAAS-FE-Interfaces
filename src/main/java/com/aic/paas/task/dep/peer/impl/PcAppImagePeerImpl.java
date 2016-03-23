@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.aic.paas.task.dep.bean.ActionType;
 import com.aic.paas.task.dep.bean.AppImageSettings;
 import com.aic.paas.task.dep.bean.AppImageSvcInfo;
+import com.aic.paas.task.dep.bean.CPcAppDepHistory;
 import com.aic.paas.task.dep.bean.GeneralDeployResp;
 import com.aic.paas.task.dep.bean.GeneralReq;
 import com.aic.paas.task.dep.bean.GeneralReq.Container;
@@ -117,8 +118,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				settings.setImage(image);
 				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
 				settings.setParams(params);
-				params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 3);
-				settings.setCallServiceParams(params);
 			}
 		}
 
@@ -162,11 +161,64 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	}
 
 	@Override
+	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus) {
+		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+		PcApp pcApp = appSvc.queryById(appId);
+		logger.info("write history count ....." + appImageList.size());
+		for (AppImageSettings setting : appImageList) {
+			PcAppDepHistory pcAppDepHistory = new PcAppDepHistory();
+			try {
+				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
+				BeanUtils.copyProperties(pcAppDepHistory, setting);
+				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
+				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setAppVnoId(appVnoId);
+				pcAppDepHistory.setAppId(appId);
+				pcAppDepHistory.setRunStatus(runStatus);
+				pcAppDepHistory.setId(null);
+				pcAppDepHistory.setAppVersionNo(pcApp.getVersionNo());
+				pcAppDepHistory.setNetZoneId(setting.getAppImage().getNetZoneId());
+				pcAppDepHistory.setImageName(setting.getImage().getImageName());
+				pcAppDepHistory.setImageFullName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setCreator(setting.getAppImage().getCreator());
+				if(runStatus!=3){
+					pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
+				}
+				else{
+					CPcAppDepHistory cdt = new CPcAppDepHistory();
+					cdt.setAppId(appId);
+					cdt.setAppVnoId(appVnoId);
+					pcAppDepHistory.setRunStatus(4);
+					pcAppDepHistorySvc.update(pcAppDepHistory, cdt);
+				}
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+		}
+
+	}
+	
+	@Override
+	public void updateDepHistory(Long appId, Long appVnoId,  Integer runStatus,Integer preRunStatus){
+		CPcAppDepHistory cdt = new CPcAppDepHistory();
+		PcAppDepHistory pcAppDepHistory = new PcAppDepHistory();
+		cdt.setAppId(appId);
+		cdt.setAppVnoId(appVnoId);
+			pcAppDepHistory.setRunStatus(runStatus);
+			cdt.setRunStatus(preRunStatus);
+			pcAppDepHistorySvc.update(pcAppDepHistory, cdt);
+	}
+
+	
+	@Override
 	public String startDeploy(Long appId, Long appVnoId) {
 		logger.info("appId ++++:" + appId);
 		logger.info("appVnoId" + appVnoId);
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
+
 		PcApp pcApp = appSvc.queryById(appId);
+
 		GeneralReq generalReq = new GeneralReq();
 		generalReq.setAppId(pcApp.getId().toString());
 		generalReq.setAppName(pcApp.getAppCode());
@@ -182,15 +234,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			List<Parameter> attrs = new ArrayList<Parameter>();
-			for (PcKvPair pair : setting.getParams()) {
+			List<PcKvPair> paramList = setting.getParams();
+			for (PcKvPair pair : paramList) {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKvKey());
-				pa.setValue(pair.getKvVal());
-				attrs.add(pa);
-			}
-			for (PcKvPair pair : setting.getCallServiceParams()) {
-				Parameter pa = new Parameter();
-				pa.setKey(pair.getKeyAlias());
 				pa.setValue(pair.getKvVal());
 				attrs.add(pa);
 			}
@@ -207,10 +254,12 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// crontainer.setDepends(containeIdList.toArray().toString());
 			container.setCpu(setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
-			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
+			// 硬盘大小单位是GB 需要转换成MB X1024
+			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
 			container.setInstances(setting.getAppImage().getInstanceCount());
-
+			// containe.set
 			if (setting.getAppImage().getIsSupportFlex().equals(1)) {
+
 				container.setMaxInst(setting.getAppImage().getMaxInstanceCount());
 				container.setMinInst(setting.getAppImage().getMinInstanceCount());
 				container.setScaleInCpu(setting.getAppImage().getCpuFlexLowerLimit());
@@ -237,11 +286,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp, ActionType.deploy);
-			writeAppDepHistory(appId, appVnoId, resp);
+			//writeAppDepHistory(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp,2);
 
 			// update app status
 			pcApp.setStatus(2);
-			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 			appSvc.saveOrUpdate(pcApp);
 		}
 		logger.info(JSON.toString(resStr));
@@ -268,21 +317,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			PcAppImage pcAppImage = setting.getAppImage();
 			container.setImgFullName(pcAppImage.getImage());
 			containers.add(container);
-
-			List<Parameter> attrs = new ArrayList<Parameter>();
-			for (PcKvPair pair : setting.getParams()) {
-				Parameter pa = new Parameter();
-				pa.setKey(pair.getKvKey());
-				pa.setValue(pair.getKvVal());
-				attrs.add(pa);
-			}
-			for (PcKvPair pair : setting.getCallServiceParams()) {
-				Parameter pa = new Parameter();
-				pa.setKey(pair.getKeyAlias());
-				pa.setValue(pair.getKvVal());
-				attrs.add(pa);
-			}
-			container.setAttrs(attrs);
 		}
 		generalReq.setContainers(containers);
 		logger.debug("upgrade req param is ====" + JSON.toString(generalReq));
@@ -291,7 +325,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp, ActionType.upgrade);
-			writeAppDepHistory(appId, appVnoId, resp);
+			//writeAppDepHistory(appId, appVnoId, resp);
+			updateDepHistory(appId, appVnoId, 4, null);
+			writeAppDepHistory(appId, appVnoId, resp,2);
 
 			// update app status
 			pcApp.setStatus(2);
@@ -310,7 +346,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -331,11 +367,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.destroy);
-			writeAppDepHistory(appId, appVnoId, resp);
+			//writeAppDepHistory(appId, appVnoId, resp);
+			updateDepHistory(appId, appVnoId, 4, null);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
-			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 1);
 		}
 		return resStr;
 	}
@@ -343,12 +379,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	@Override
 	public String startApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getStopedAppVersionId(appId);
+
 		if (appVnoId == null) {
 			logger.error("can't find app " + appId + " version info");
 			// TODO: write some return info
 			return "";
 		}
-
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -371,15 +408,16 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.start);
-			writeAppDepHistory(appId, appVnoId, resp);
+			//writeAppDepHistory(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp, 2);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
-			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 2);
 		}
 		return resStr;
 	}
 
+	
 	@Override
 	public String pauseApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
@@ -388,7 +426,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			// TODO: write some return info
 			return "";
 		}
-
+		pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
 
@@ -410,11 +448,11 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.stop);
-			writeAppDepHistory(appId, appVnoId, resp);
+			//writeAppDepHistory(appId, appVnoId, resp);
+			updateDepHistory(appId, appVnoId, 4, 3);
 			// update app status
 			pcApp.setStatus(2);
 			appSvc.saveOrUpdate(pcApp);
-			pcAppVersionSvc.updateAppVersionStatusById(appVnoId, 3);
 		}
 		return resStr;
 	}
