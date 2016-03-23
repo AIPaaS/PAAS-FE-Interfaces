@@ -147,6 +147,10 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
 				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 				pcAppDepHistory.setId(null);
+				pcAppDepHistory.setAppVersionNo(pcApp.getVersionNo());
+				pcAppDepHistory.setNetZoneId(setting.getAppImage().getNetZoneId());
+				pcAppDepHistory.setImageName(setting.getImage().getImageName());
+				pcAppDepHistory.setImageFullName(setting.getAppImage().getContainerFullName());
 				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 			} catch (Exception e) {
 				logger.error("", e);
