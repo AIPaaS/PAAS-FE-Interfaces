@@ -117,6 +117,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				settings.setImage(image);
 				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
 				settings.setParams(params);
+				params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 3);
+				settings.setCallServiceParams(params);
 			}
 		}
 
@@ -183,8 +185,13 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setContainerName(setting.getAppImage().getContainerFullName().toLowerCase());
 			container.setZoneId(setting.getAppImage().getNetZoneId().toString());
 			List<Parameter> attrs = new ArrayList<Parameter>();
-			List<PcKvPair> paramList = setting.getParams();
-			for (PcKvPair pair : paramList) {
+			for (PcKvPair pair : setting.getParams()) {
+				Parameter pa = new Parameter();
+				pa.setKey(pair.getKvKey());
+				pa.setValue(pair.getKvVal());
+				attrs.add(pa);
+			}
+			for(PcKvPair pair : setting.getCallServiceParams()) {
 				Parameter pa = new Parameter();
 				pa.setKey(pair.getKvKey());
 				pa.setValue(pair.getKvVal());
@@ -265,6 +272,21 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			PcAppImage pcAppImage = setting.getAppImage();
 			container.setImgFullName(pcAppImage.getImage());
 			containers.add(container);
+			
+			List<Parameter> attrs = new ArrayList<Parameter>();
+			for (PcKvPair pair : setting.getParams()) {
+				Parameter pa = new Parameter();
+				pa.setKey(pair.getKvKey());
+				pa.setValue(pair.getKvVal());
+				attrs.add(pa);
+			}
+			for(PcKvPair pair : setting.getCallServiceParams()) {
+				Parameter pa = new Parameter();
+				pa.setKey(pair.getKvKey());
+				pa.setValue(pair.getKvVal());
+				attrs.add(pa);
+			}
+			container.setAttrs(attrs);
 		}
 		generalReq.setContainers(containers);
 		logger.debug("upgrade req param is ====" + JSON.toString(generalReq));
