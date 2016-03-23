@@ -69,7 +69,7 @@ public class AppDepInstanceReceive implements NsqReceiveHandler {
 		processDepInstance(dockerIntstance);
 
 		// 2
-//		processPcAppAccess(dockerIntstance);
+		processPcAppAccess(dockerIntstance);
 	}
 
 	private void processPcAppAccess(ParmDockerImage dockerIntstance) {
