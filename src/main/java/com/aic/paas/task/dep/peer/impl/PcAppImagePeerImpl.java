@@ -152,6 +152,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pcAppDepHistory.setNetZoneId(setting.getAppImage().getNetZoneId());
 				pcAppDepHistory.setImageName(setting.getImage().getImageName());
 				pcAppDepHistory.setImageFullName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setContainerFullName(setting.getAppImage().getContainerFullName());
 				pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
 			} catch (Exception e) {
 				logger.error("", e);
@@ -171,7 +172,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				BeanUtils.copyProperties(pcAppDepHistory, pcApp);
 				BeanUtils.copyProperties(pcAppDepHistory, setting);
 				pcAppDepHistory.setTaskId(resp.getReqId().longValue());
-				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setContainerName(setting.getAppImage().getContainerName());
 				pcAppDepHistory.setAppVnoId(appVnoId);
 				pcAppDepHistory.setAppId(appId);
 				pcAppDepHistory.setRunStatus(runStatus);
@@ -179,7 +180,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pcAppDepHistory.setAppVersionNo(pcApp.getVersionNo());
 				pcAppDepHistory.setNetZoneId(setting.getAppImage().getNetZoneId());
 				pcAppDepHistory.setImageName(setting.getImage().getImageName());
-				pcAppDepHistory.setImageFullName(setting.getAppImage().getContainerFullName());
+				pcAppDepHistory.setContainerFullName(setting.getAppImage().getContainerFullName());
 				pcAppDepHistory.setCreator(setting.getAppImage().getCreator());
 				if(runStatus!=3){
 					pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
