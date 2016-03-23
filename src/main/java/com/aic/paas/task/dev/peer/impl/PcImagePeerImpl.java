@@ -26,7 +26,12 @@ public class PcImagePeerImpl implements PcImagePeer {
 			this.buildManagementUrl = buildManagementUrl.trim();
 		}
 	}
-
+	private String wdevUrl;
+	public void setWdevUrl(String wdevUrl) {
+		if (wdevUrl != null) {
+			this.wdevUrl = wdevUrl.trim();
+		}
+	}	
 	@Override
 	public String uploadImage(String param) {
 		String result = "";
@@ -48,6 +53,25 @@ public class PcImagePeerImpl implements PcImagePeer {
 		Map<String,String> updateMap = new HashMap<String,String>();
 		updateMap = JSON.toObject(param,Map.class);
 		result = imageSvc.updateImageByCallBack(updateMap);
+		if("success".equals(result)){
+			String export_file_url = updateMap.get("export_file_url");
+			String[] array = export_file_url.split("/");
+			String filename = "";
+			if(array.length>0){
+				filename = array[array.length-1];
+			}
+			if(!"".equals(filename)){
+				logger.info("调用dev中删除镜像的地址是："+wdevUrl+"/dev/image/delteImage/"+filename);
+				String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/image/delteImage/"+filename,"");
+				Map<String,String> sendResultMap = new HashMap<String,String>();
+				if(!"".equals(sendResult)){
+					sendResultMap = JSON.toObject(sendResult,Map.class);
+					result = sendResultMap.get("result");
+				}
+				logger.info("删除镜像的结果是："+result);
+				
+			}
+		}
 		return result;
 	}
 	@SuppressWarnings("unchecked")

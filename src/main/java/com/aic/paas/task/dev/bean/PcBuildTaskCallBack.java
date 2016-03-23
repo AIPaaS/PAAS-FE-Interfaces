@@ -18,7 +18,7 @@ public class PcBuildTaskCallBack extends BaseResponse {
 	// started,error
 	private String status;
 
-
+	private String imgRespId;
 	public String getTag() {
 		return tag;
 	}
@@ -57,6 +57,14 @@ public class PcBuildTaskCallBack extends BaseResponse {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getImgRespId() {
+		return imgRespId;
+	}
+
+	public void setImgRespId(String imgRespId) {
+		this.imgRespId = imgRespId;
 	}
 
 }
