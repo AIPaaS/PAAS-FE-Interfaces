@@ -61,10 +61,10 @@ public class PcImagePeerImpl implements PcImagePeer {
 				filename = array[array.length-1];
 			}
 			if(!"".equals(filename)){
-				logger.info("调用dev中删除镜像的地址是："+wdevUrl+"/dev/image/delteImage/"+filename);
-				String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/image/delteImage/"+filename,"");
+				logger.info("调用dev中删除镜像的地址是："+wdevUrl+"/dev/image/deleteImage/"+filename);
+				String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/image/deleteImage/"+filename,"");
 				Map<String,String> sendResultMap = new HashMap<String,String>();
-				logger.info("调用dev中删除镜像的返回值sendResultMap是："+sendResultMap);
+				logger.info("调用dev中删除镜像的返回值sendResult是："+sendResult);
 				if(!"".equals(sendResult)){
 					sendResultMap = JSON.toObject(sendResult,Map.class);
 					result = sendResultMap.get("result");
