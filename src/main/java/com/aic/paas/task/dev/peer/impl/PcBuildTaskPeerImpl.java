@@ -139,7 +139,7 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 		String sendParam = JSON.toString(pbtc);
 		
 //		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
-		wdevUrl = "http://localhost:16203/paas-wdev";
+//		wdevUrl = "http://localhost:16203/paas-wdev";
 		String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/buildtask/updateBuildTaskByCallBack", sendParam);
 		return sendResult;
 	}
