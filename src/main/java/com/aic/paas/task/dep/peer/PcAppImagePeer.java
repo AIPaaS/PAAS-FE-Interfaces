@@ -61,8 +61,13 @@ public interface PcAppImagePeer {
 	 */
 	public String pauseApp(Long appId);
 	
-	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus);
-	
+	/**
+	 * 更新历史数据
+	 * @param appId
+	 * @param appVnoId
+	 * @param runStatus
+	 * @param preRunStatus
+	 */
 	public void updateDepHistory(Long appId, Long appVnoId,  Integer runStatus,Integer preRunStatus);
 	
 

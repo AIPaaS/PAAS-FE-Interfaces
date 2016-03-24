@@ -135,6 +135,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return settingsList;
 	}
 
+	
 	private PcAppTask writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp, ActionType actionType) {
 		PcAppTask pcAppTask = new PcAppTask();
 		pcAppTask.setId(resp.getReqId().longValue());
@@ -172,7 +173,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	}
 
-	@Override
+	/**
+	 *增加状态参数  
+	 */
 	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus) {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
 		PcApp pcApp = appSvc.queryById(appId);
