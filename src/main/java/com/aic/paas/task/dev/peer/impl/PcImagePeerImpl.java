@@ -64,6 +64,7 @@ public class PcImagePeerImpl implements PcImagePeer {
 				logger.info("调用dev中删除镜像的地址是："+wdevUrl+"/dev/image/delteImage/"+filename);
 				String sendResult = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/image/delteImage/"+filename,"");
 				Map<String,String> sendResultMap = new HashMap<String,String>();
+				logger.info("调用dev中删除镜像的返回值sendResultMap是："+sendResultMap);
 				if(!"".equals(sendResult)){
 					sendResultMap = JSON.toObject(sendResult,Map.class);
 					result = sendResultMap.get("result");
