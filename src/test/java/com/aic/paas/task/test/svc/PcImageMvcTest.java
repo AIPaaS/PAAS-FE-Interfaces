@@ -15,15 +15,15 @@ public class PcImageMvcTest {
 		Map<String,String> callBackMap = new HashMap<String,String>();
 		callBackMap.put("image_name", "paas_task/paas_task-1.1");
 		callBackMap.put("tag", "9.9.9");
+		callBackMap.put("build_id", "268");
 		callBackMap.put("time", "2016-03-19 11:32:56.816028");
 		callBackMap.put("status", "success");// success / error
-		callBackMap.put("export_file_url","http://muluming/wenjianming.tar.gz");
+		callBackMap.put("export_file_url","http://muluming/20160324113203_imagename.tar");
 		String param1 = JSON.toString(callBackMap);
 		System.out.println(param1);
 		
 //		String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
-		String sendPostRequest = HttpClientUtil.sendPostRequest("http://localhost:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
-		
+		String sendPostRequest = HttpClientUtil.sendPostRequest("http://10.1.245.100:16009/paas-task/dev/imageMvc/updateImageByCallBack", param1);
 		System.out.println("------------------"+sendPostRequest);
 		
 	}

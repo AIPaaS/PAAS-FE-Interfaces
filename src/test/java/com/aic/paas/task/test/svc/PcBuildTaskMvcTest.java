@@ -17,7 +17,7 @@ public class PcBuildTaskMvcTest {
 		
 		pbtc.setNamespace("aaa_____zhaolijing");
 		pbtc.setRepo_name("paas/paasproject/buildname");
-		pbtc.setBuild_id("33");
+		pbtc.setBuild_id("50");
 		pbtc.setDuration("8");
 		pbtc.setTag("1.1.1");
 		pbtc.setTime("2016-3-20 17:53:07.792");
