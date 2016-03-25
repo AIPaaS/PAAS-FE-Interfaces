@@ -51,7 +51,16 @@ public class PcImagePeerImpl implements PcImagePeer {
 			return result ;
 		}
 		Map<String,String> updateMap = new HashMap<String,String>();
+		
+		//请求dev的前场，目的是获取：镜像库Id----------------------------------------------------
+		String imgRespId = HttpClientUtil.sendPostRequest(wdevUrl+"/dev/image/saveImageByCallBack",param); 
+		if("error".equals(imgRespId)){
+			logger.info("查询出的镜像库的Id为error");
+			return result;
+		}
 		updateMap = JSON.toObject(param,Map.class);
+		updateMap.put("imgRespId", imgRespId);
+		String updateParam = JSON.toString(updateMap);
 		result = imageSvc.updateImageByCallBack(updateMap);
 		if("success".equals(result)){
 			String export_file_url = updateMap.get("export_file_url");

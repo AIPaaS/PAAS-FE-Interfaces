@@ -37,6 +37,7 @@ public class PcImageMvc {
 		String result ="error";
 		try {
 			result = imagePeer.updateImageByCallBack(param);
+			
 		} catch (Exception e) {
 
 		}
