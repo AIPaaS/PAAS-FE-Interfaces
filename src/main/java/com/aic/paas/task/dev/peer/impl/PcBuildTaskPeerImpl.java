@@ -116,26 +116,31 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 			logger.info("出错啦！查询不到产品所属的机房！");
 			return result;
 		}
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId="+ compRoomId);
-		//3.根据机房Id，查询镜像库Id
-		CPcImageRepository cir = new CPcImageRepository();
-		cir.setRoomId(Long.parseLong(compRoomId));
-//		cir.setRoomId(Long.parseLong("74"));
-		cir.setImgRespType(1);//imgRespType=1(是否快照镜像库)
-		cir.setDataStatus(1);
-		
-		List<PcImageRepository> pirlist =imageRepositorySvc.queryList(cir, "ID");
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:pirlist.size()="+ pirlist.size());
-		String imgRespId = "";//所属镜像库
-		if(pirlist != null && pirlist.size()>0){
-			if(pirlist.get(0).getId()!=null)imgRespId = pirlist.get(0).getId().toString();
+		if(!"isExt".equals(compRoomId)){
+			logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId="+ compRoomId);
+			//3.根据机房Id，查询镜像库Id
+			CPcImageRepository cir = new CPcImageRepository();
+			cir.setRoomId(Long.parseLong(compRoomId));
+//			cir.setRoomId(Long.parseLong("74"));
+			cir.setImgRespType(1);//imgRespType=1(是否快照镜像库)
+			cir.setDataStatus(1);
+			
+			List<PcImageRepository> pirlist =imageRepositorySvc.queryList(cir, "ID");
+			logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:pirlist.size()="+ pirlist.size());
+			String imgRespId = "";//所属镜像库
+			if(pirlist != null && pirlist.size()>0){
+				if(pirlist.get(0).getId()!=null)imgRespId = pirlist.get(0).getId().toString();
+			}
+			if("".equals(imgRespId)){
+				logger.info("出错啦！查询不到房间对应的镜像库！");
+				return result;
+			}
+			logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId="+ imgRespId);
+			pbtc.setImgRespId(imgRespId);
 		}
-		if("".equals(imgRespId)){
-			logger.info("出错啦！查询不到房间对应的镜像库！");
-			return result;
+		if("isExt".equals(compRoomId)){
+			pbtc.setImgRespId("000000");
 		}
-		logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:imgRespId="+ imgRespId);
-		pbtc.setImgRespId(imgRespId);
 		String sendParam = JSON.toString(pbtc);
 		
 //		return buildTaskSvc.updateBuildTaskByCallBack(pbtc,imgRespId);
