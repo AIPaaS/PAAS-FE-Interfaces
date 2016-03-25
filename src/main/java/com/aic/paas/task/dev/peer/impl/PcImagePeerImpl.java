@@ -59,7 +59,13 @@ public class PcImagePeerImpl implements PcImagePeer {
 			return result;
 		}
 		updateMap = JSON.toObject(param,Map.class);
-		updateMap.put("imgRespId", imgRespId);
+		if("isExt".equals(imgRespId)){
+			logger.info("是外部镜像，没有对应的产品，工程，镜像库。此时默认imgRespId为000000");
+			updateMap.put("imgRespId", "000000");
+		}else{
+			updateMap.put("imgRespId", imgRespId);
+		}
+				
 		String updateParam = JSON.toString(updateMap);
 		result = imageSvc.updateImageByCallBack(updateMap);
 		if("success".equals(result)){
