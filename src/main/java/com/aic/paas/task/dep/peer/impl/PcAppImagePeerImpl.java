@@ -27,6 +27,7 @@ import com.aic.paas.task.dep.bean.PcAppDepHistory;
 import com.aic.paas.task.dep.bean.PcAppImage;
 import com.aic.paas.task.dep.bean.PcAppImgSvc;
 import com.aic.paas.task.dep.bean.PcAppTask;
+import com.aic.paas.task.dep.bean.PcImageRepository;
 import com.aic.paas.task.dep.bean.PcKvPair;
 import com.aic.paas.task.dep.peer.PcAppImagePeer;
 import com.aic.paas.task.dep.rest.IDeployServiceManager;
@@ -66,7 +67,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 
 	@Autowired
 	PcKvPairSvc pcKvPairSvc;
-	
+
 	@Autowired
 	PcAppImageSvc pcAppImageSvc;
 
@@ -118,6 +119,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				if (image == null) {
 					image = new PcImage();
 					image.setImageName(settings.getAppImage().getImage());
+				} else {
+					PcImageRepository pcImageRepository = pcAppImageSvc.getPcImageReposityById(image.getImgRespId());
+					image.setImageName(pcImageRepository.getImgRespUrl() + "/" + image.getImageName() + ":" + image.getDepTag());
 				}
 				settings.setImage(image);
 				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
@@ -135,7 +139,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return settingsList;
 	}
 
-	
 	private PcAppTask writeTaskLog(Long appId, Long appVnoId, GeneralDeployResp resp, ActionType actionType) {
 		PcAppTask pcAppTask = new PcAppTask();
 		pcAppTask.setId(resp.getReqId().longValue());
@@ -174,7 +177,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 	}
 
 	/**
-	 *增加状态参数  
+	 * 增加状态参数
 	 */
 	public void writeAppDepHistory(Long appId, Long appVnoId, GeneralDeployResp resp, Integer runStatus) {
 		List<AppImageSettings> appImageList = getAppImageSettingsList(appId, appVnoId);
@@ -196,10 +199,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 				pcAppDepHistory.setImageName(setting.getImage().getImageName());
 				pcAppDepHistory.setContainerFullName(setting.getAppImage().getContainerFullName());
 				pcAppDepHistory.setCreator(setting.getAppImage().getCreator());
-				if(runStatus!=3){
+				if (runStatus != 3) {
 					pcAppDepHistorySvc.saveOrUpdate(pcAppDepHistory);
-				}
-				else{
+				} else {
 					CPcAppDepHistory cdt = new CPcAppDepHistory();
 					cdt.setAppId(appId);
 					cdt.setAppVnoId(appVnoId);
@@ -212,19 +214,18 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		}
 
 	}
-	
+
 	@Override
-	public void updateDepHistory(Long appId, Long appVnoId,  Integer runStatus,Integer preRunStatus){
+	public void updateDepHistory(Long appId, Long appVnoId, Integer runStatus, Integer preRunStatus) {
 		CPcAppDepHistory cdt = new CPcAppDepHistory();
 		PcAppDepHistory pcAppDepHistory = new PcAppDepHistory();
 		cdt.setAppId(appId);
 		cdt.setAppVnoId(appVnoId);
-			pcAppDepHistory.setRunStatus(runStatus);
-			cdt.setRunStatus(preRunStatus);
-			pcAppDepHistorySvc.update(pcAppDepHistory, cdt);
+		pcAppDepHistory.setRunStatus(runStatus);
+		cdt.setRunStatus(preRunStatus);
+		pcAppDepHistorySvc.update(pcAppDepHistory, cdt);
 	}
 
-	
 	@Override
 	public String startDeploy(Long appId, Long appVnoId) {
 		logger.info("appId ++++:" + appId);
@@ -307,8 +308,8 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp, ActionType.deploy);
-			//writeAppDepHistory(appId, appVnoId, resp);
-			writeAppDepHistory(appId, appVnoId, resp,2);
+			// writeAppDepHistory(appId, appVnoId, resp);
+			writeAppDepHistory(appId, appVnoId, resp, 2);
 
 			// update app status
 			pcApp.setStatus(2);
@@ -346,9 +347,9 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			// write task log and so on...
 			writeTaskLog(appId, appVnoId, resp, ActionType.upgrade);
-			//writeAppDepHistory(appId, appVnoId, resp);
+			// writeAppDepHistory(appId, appVnoId, resp);
 			updateDepHistory(appId, appVnoId, 4, null);
-			writeAppDepHistory(appId, appVnoId, resp,2);
+			writeAppDepHistory(appId, appVnoId, resp, 2);
 
 			// update app status
 			pcApp.setStatus(2);
@@ -388,7 +389,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.destroy);
-			//writeAppDepHistory(appId, appVnoId, resp);
+			// writeAppDepHistory(appId, appVnoId, resp);
 			updateDepHistory(appId, appVnoId, 4, null);
 			// update app status
 			pcApp.setStatus(2);
@@ -429,7 +430,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.start);
-			//writeAppDepHistory(appId, appVnoId, resp);
+			// writeAppDepHistory(appId, appVnoId, resp);
 			writeAppDepHistory(appId, appVnoId, resp, 2);
 			// update app status
 			pcApp.setStatus(2);
@@ -438,7 +439,6 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		return resStr;
 	}
 
-	
 	@Override
 	public String pauseApp(Long appId) {
 		Long appVnoId = pcAppVersionSvc.getRunningAppVersionId(appId);
@@ -469,7 +469,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 		GeneralDeployResp resp = JSON.toObject(resStr, GeneralDeployResp.class);
 		if (GeneralDeployResp.SUCCESS.equals(resp.getResultCode())) {
 			writeTaskLog(appId, appVnoId, resp, ActionType.stop);
-			//writeAppDepHistory(appId, appVnoId, resp);
+			// writeAppDepHistory(appId, appVnoId, resp);
 			updateDepHistory(appId, appVnoId, 4, 3);
 			// update app status
 			pcApp.setStatus(2);

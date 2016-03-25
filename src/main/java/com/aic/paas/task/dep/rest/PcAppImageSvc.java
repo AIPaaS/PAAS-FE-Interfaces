@@ -7,6 +7,7 @@ import com.aic.paas.task.dep.bean.AppImageSvcInfo;
 import com.aic.paas.task.dep.bean.CPcAppImage;
 import com.aic.paas.task.dep.bean.PcAppImage;
 import com.aic.paas.task.dep.bean.PcAppImgSvc;
+import com.aic.paas.task.dep.bean.PcImageRepository;
 import com.aic.paas.task.dep.bean.PcKvPair;
 import com.aic.paas.task.dep.bean.PcService;
 import com.binary.jdbc.Page;
@@ -183,7 +184,7 @@ public interface PcAppImageSvc {
 	
 	public List<PcAppImgSvc> getPcAppImgSvc(Long appImageId);
 	
-	
+	public PcImageRepository getPcImageReposityById(Long id);
 }
 
 
