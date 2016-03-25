@@ -277,7 +277,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setCpu(setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem(Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setDisk(Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
 			container.setInstances(setting.getAppImage().getInstanceCount());
 			// containe.set
 			if (setting.getAppImage().getIsSupportFlex().equals(1)) {
@@ -556,7 +556,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
 
 			// List<For> servicesFor = new ArrayList<For>();
 			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
@@ -621,7 +621,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 			container.setCpu("" + setting.getAppImage().getCpuCount() / 100.0);
 			container.setMem("" + Integer.parseInt(setting.getAppImage().getMemSize().toString()));
 			// 硬盘大小单位是GB 需要转换成MB X1024
-			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()) * 1024);
+			container.setDisk("" + Integer.parseInt(setting.getAppImage().getDiskSize().toString()));
 
 			// List<For> servicesFor = new ArrayList<For>();
 			List<AppImageSvcInfo> callServiceList = setting.getCallServices();
