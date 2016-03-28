@@ -88,6 +88,9 @@ public class CallbackMvc {
 				pcAppDepInstance.setAppDepHistoryId(appDepHistoryId);
 				pcAppDepInstance.setInstanceName(instance.getInstanceId());
 				pcAppDepInstance.setServerIp(instance.getHost());
+				pcAppDepInstance.setDataStatus(instance.getDataStatus());
+				pcAppDepInstance.setTime(instance.getTime());
+				
 				pcAppDepInstanceSvc.saveOrUpdate(pcAppDepInstance);
 				int stateKey = InstanceStateType.keyOf(instance.getState());
 				if (stateKey > state)
@@ -123,7 +126,7 @@ public class CallbackMvc {
 		List<PcAppDepHistory> appDepHistorys = pcAppDepHistorySvc.queryByTaskId(taskId);
 		if (CollectionUtils.isNotEmpty(appDepHistorys)) {
 			for (PcAppDepHistory pcAppDepHistory : appDepHistorys) {
-				result.put(pcAppDepHistory.getContainerName(), pcAppDepHistory.getId());
+				result.put(pcAppDepHistory.getContainerFullName(), pcAppDepHistory.getId());
 			}
 		}
 		return result;
