@@ -88,8 +88,8 @@ public class CallbackMvc {
 				pcAppDepInstance.setAppDepHistoryId(appDepHistoryId);
 				pcAppDepInstance.setInstanceName(instance.getInstanceId());
 				pcAppDepInstance.setServerIp(instance.getHost());
-				pcAppDepInstance.setDataStatus(instance.getDataStatus());
-				pcAppDepInstance.setTime(instance.getTime());
+				//pcAppDepInstance.setDataStatus(instance.getDataStatus());
+				//pcAppDepInstance.setTime(instance.getTime());
 				
 				pcAppDepInstanceSvc.saveOrUpdate(pcAppDepInstance);
 				int stateKey = InstanceStateType.keyOf(instance.getState());
