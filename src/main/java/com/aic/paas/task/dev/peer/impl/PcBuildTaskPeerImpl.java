@@ -116,7 +116,12 @@ public class PcBuildTaskPeerImpl implements PcBuildTaskPeer {
 			logger.info("出错啦！查询不到产品所属的机房！");
 			return result;
 		}
+		if("error".equals(compRoomId)){
+			logger.info("出错啦！调用queryCompRoomIdByCallBack的过程出错了！");
+			return result;
+		}
 		if(!"isExt".equals(compRoomId)){
+			logger.info("是内部镜像，则查询对应的镜像库记录！");
 			logger.info("paas-task:PcBuildTaskPeerImpl:updateBuildTaskByCallBack:compRoomId="+ compRoomId);
 			//3.根据机房Id，查询镜像库Id
 			CPcImageRepository cir = new CPcImageRepository();
