@@ -121,7 +121,7 @@ public class PcAppImagePeerImpl implements PcAppImagePeer {
 					image.setImageName(settings.getAppImage().getImage());
 				} else {
 					PcImageRepository pcImageRepository = pcAppImageSvc.getPcImageReposityById(image.getImgRespId());
-					image.setImageName(pcImageRepository.getImgRespUrl() + "/" + image.getImageFullName() + ":" + image.getDepTag());
+					image.setImageName(pcImageRepository.getImgRespUrl() + image.getImageFullName() + ":" + image.getDepTag());
 				}
 				settings.setImage(image);
 				List<PcKvPair> params = pcKvPairSvc.getPcKvPairs(settings.getAppImage().getId(), 2);
